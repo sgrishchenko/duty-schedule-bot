@@ -2,7 +2,7 @@ import Telegraf from 'telegraf';
 
 const PORT = Number(process.env.PORT) ?? 3000;
 
-const BOT_URL = process.env.URL ?? 'https://duty-schedule-bot.herokuapp.com/';
+const BOT_URL = process.env.BOT_URL ?? '';
 const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 
 const bot = new Telegraf(BOT_TOKEN);
