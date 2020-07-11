@@ -8,7 +8,8 @@ const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 const bot = new Telegraf(BOT_TOKEN);
 
 bot.command('newschedule', (ctx) => {
-    ctx.reply('Hello');
+    ctx.chat?.id;
+    ctx.replyWithMarkdown('Hello');
 });
 
 bot.command('help', (ctx) => {
