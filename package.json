@@ -1,0 +1,21 @@
+{
+  "name": "duty-schedule-bot",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc --outDir lib -d"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "redis": "^3.0.2",
+    "telegraf": "^3.38.0"
+  },
+  "devDependencies": {
+    "@types/redis": "^2.8.25",
+    "typescript": "^3.9.6"
+  }
+}
