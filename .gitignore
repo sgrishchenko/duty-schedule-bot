@@ -116,3 +116,8 @@ dist
 .yarn/build-state.yml
 .pnp.*
 
+# Editor config
+.idea
+
+# Build output
+lib
