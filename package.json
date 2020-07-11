@@ -6,7 +6,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc --outDir lib -d"
+    "build": "tsc --outDir lib -d",
+    "start": "npm run build && node lib/index.js"
   },
   "author": "",
   "license": "MIT",
@@ -17,5 +18,8 @@
   "devDependencies": {
     "@types/redis": "^2.8.25",
     "typescript": "^3.9.6"
+  },
+  "engines": {
+    "node": "13.11.0"
   }
 }
