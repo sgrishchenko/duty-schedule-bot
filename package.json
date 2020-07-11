@@ -6,7 +6,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc --outDir lib -d",
+    "build": "tsc",
     "start": "node lib/index.js",
     "postinstall": "npm run build"
   },
