@@ -1,8 +1,9 @@
 import Telegraf from 'telegraf';
 
-const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 const PORT = Number(process.env.PORT) ?? 3000;
-const URL = process.env.URL ?? 'https://duty-schedule-bot.herokuapp.com/';
+
+const BOT_URL = process.env.URL ?? 'https://duty-schedule-bot.herokuapp.com/';
+const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 
 const bot = new Telegraf(BOT_TOKEN);
 
@@ -14,7 +15,7 @@ bot.command('help', (ctx) => {
     return ctx.reply('This bot will help you to create a duty schedule. Send /newschedule to create a new duty schedule.');
 });
 
-bot.telegram.setWebhook(`${URL}/bot`)
+bot.telegram.setWebhook(`${BOT_URL}/bot`)
     .then(() => {
         bot.startWebhook('/bot', null, PORT);
         return bot.launch();

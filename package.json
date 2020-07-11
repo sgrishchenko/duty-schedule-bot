@@ -7,12 +7,13 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node lib/index.js",
+    "start": "node -r dotenv/config lib/index.js",
     "postinstall": "npm run build"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "redis": "^3.0.2",
     "telegraf": "^3.38.0"
   },
