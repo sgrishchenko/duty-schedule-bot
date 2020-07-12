@@ -10,7 +10,7 @@ export class Scheduler {
     public constructor(
         private chatId: number,
         private dutySchedule: DutySchedule,
-        private handleCallback: (pointer: number) => void
+        private handleCallback: (team: string[]) => void
     ) {
         const now = new Date();
 
@@ -39,8 +39,15 @@ export class Scheduler {
     }
 
     private handleSchedule() {
-        const {pointer, members} = this.dutySchedule;
-        this.handleCallback(pointer)
+        const {pointer, members, teamSize} = this.dutySchedule;
+        const team = [];
+
+        for (let i = 0; i < Math.min(teamSize, members.length); i++) {
+            const memberIndex = (members.length + pointer + i) % members.length;
+            team.push(members[memberIndex])
+        }
+
+        this.handleCallback(team)
 
         this.dutySchedule.pointer = (members.length + pointer + 1) % members.length;
 

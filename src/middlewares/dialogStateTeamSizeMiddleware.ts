@@ -5,6 +5,7 @@ import {DutySchedule} from "../models/DutySchedule";
 import {dutyScheduleDraftStorage} from "../storages/DutyScheduleDraftStorage";
 import {dialogStateStorage} from "../storages/DialogStateStorage";
 import {dutyScheduleStorage} from "../storages/DutyScheduleStorage";
+import {schedulerService} from "../services/SchedulerService";
 
 export const dialogStateTeamSizeMiddleware: Middleware<DialogStateContext> = async (ctx, next) => {
     if (ctx.dialogState !== DialogState.TeamSize) {
@@ -43,6 +44,7 @@ export const dialogStateTeamSizeMiddleware: Middleware<DialogStateContext> = asy
     }
 
     await dutyScheduleStorage.set(ctx.chat.id, dutySchedule);
+    schedulerService.updateScheduler(ctx.chat.id, dutySchedule)
 
     return ctx.reply(JSON.stringify(dutySchedule, null, 2))
 }

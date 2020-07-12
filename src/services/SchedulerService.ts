@@ -1,27 +1,43 @@
+import {Message} from "telegraf/typings/telegram-types";
 import {dutyScheduleStorage} from "../storages/DutyScheduleStorage";
 import {Scheduler} from "./Scheduler";
-import {bot} from "../bot";
+import {DutySchedule} from "../models/DutySchedule";
+
+export type SendMessage = (chatId: number, text: string) => Promise<Message>
 
 export class SchedulerService {
-    public async init() {
+    private schedulers: Partial<Record<number, Scheduler>> = {}
+    private sendMessage?: SendMessage
+
+    public async init(sendMessage: SendMessage) {
+        this.schedulers = {};
+        this.sendMessage = sendMessage;
+
         const dutySchedules = await dutyScheduleStorage.getAll();
 
         for (const entry of Object.entries(dutySchedules)) {
             const [key, dutySchedule] = entry;
             const chatId = Number(key);
 
-            new Scheduler(chatId, dutySchedule, pointer => {
-                const {members, teamSize} = dutySchedule;
-                const team = [];
-
-                for (let i = 0; i < Math.min(teamSize, members.length); i++) {
-                    const memberIndex = (members.length + pointer + i) % members.length;
-                    team.push(members[memberIndex])
-                }
-
-                bot.telegram.sendMessage(chatId, 'Now on duty:\n' + team.join('\n'))
-            })
+            this.createScheduler(chatId, dutySchedule);
         }
+    }
+
+    private createScheduler(chatId: number, dutySchedule: DutySchedule) {
+        this.schedulers[chatId] = new Scheduler(chatId, dutySchedule, team => {
+            this.sendMessage?.(chatId, 'Now on duty:\n' + team.join('\n'))
+        })
+    }
+
+    public updateScheduler(chatId: number, dutySchedule: DutySchedule) {
+        const existingScheduler = this.schedulers[chatId];
+
+        if (existingScheduler) {
+            existingScheduler.destroy();
+            delete this.schedulers[chatId];
+        }
+
+        this.createScheduler(chatId, dutySchedule);
     }
 }
 
