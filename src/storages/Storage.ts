@@ -1,4 +1,4 @@
-import {hget, hset, hdel} from "../redisClient";
+import {hget, hgetall, hset, hdel} from "../redisClient";
 import {StorageKey} from "./StorageKey";
 
 export abstract class Storage<Type> {
@@ -16,6 +16,18 @@ export abstract class Storage<Type> {
         return reply !== null
             ? JSON.parse(reply)
             : null
+    }
+
+    public async getAll(): Promise<Record<number, Type>> {
+        const reply = await hgetall(this.storageKey);
+
+        return reply !== null
+            ? Object.fromEntries(
+                Object.entries(reply).map(([key, value]) => {
+                    return [key, JSON.parse(value)]
+                })
+            )
+            : {}
     }
 
 
