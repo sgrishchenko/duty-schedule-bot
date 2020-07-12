@@ -32,18 +32,16 @@ export class SchedulerService {
         this.schedulers[chatId] = new Scheduler(
             chatId,
             dutySchedule,
-            this.createHandleCallback(chatId)
+            (team: string[], pointer: number) => {
+                this.sendMessage?.(chatId, 'Now on duty:\n' + team.join('\n'))
+
+                dutySchedule.pointer = pointer
+
+                this.dutyScheduleStorage.set(chatId, dutySchedule).catch(error => {
+                    console.log(error)
+                })
+            }
         )
-    }
-
-    private createHandleCallback(chatId: number) {
-        return (team: string[], dutySchedule: DutySchedule) => {
-            this.sendMessage?.(chatId, 'Now on duty:\n' + team.join('\n'))
-
-            this.dutyScheduleStorage.set(chatId, dutySchedule).catch(error => {
-                console.log(error)
-            })
-        }
     }
 
     public updateScheduler(chatId: number, dutySchedule: DutySchedule) {
