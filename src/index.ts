@@ -107,7 +107,7 @@ bot.hears(/^[^\/].*/, async ctx => {
 
             await dutyScheduleStorage.set(chat.id, dutySchedule);
 
-            return ctx.reply(JSON.stringify(dutySchedule))
+            return ctx.reply(JSON.stringify(dutySchedule, null, 2))
         }
     }
 })
@@ -120,7 +120,7 @@ bot.action(Object.values(Interval), async ctx => {
     const draft = await dutyScheduleDraftStorage.get(chat.id);
 
     if (dialogState === DialogState.Interval) {
-        const interval = (ctx.callbackQuery?.message ?? '') as Interval
+        const interval = (ctx.callbackQuery?.data ?? '') as Interval
 
         await dutyScheduleDraftStorage.set(chat.id, {
             ...draft,
@@ -142,7 +142,16 @@ bot.command('currentschedule', async ctx => {
         return ctx.reply('There is no duty schedule yet. Send /newschedule to create a new duty schedule.')
     }
 
-    return ctx.reply(JSON.stringify(dutySchedule))
+    return ctx.reply(JSON.stringify(dutySchedule, null, 2))
+});
+
+bot.command('deleteschedule', async ctx => {
+    const {chat} = ctx;
+    if (!chat) return;
+
+    await dutyScheduleStorage.delete(chat.id);
+
+    return ctx.reply('The current duty schedule has been removed. Send /newschedule to create a new duty schedule.')
 });
 
 bot.command('help', ctx => {
