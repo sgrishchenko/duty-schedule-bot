@@ -15,7 +15,7 @@ export const dialogStateTeamSizeMiddleware: Middleware<DialogStateContext> = asy
 
     const teamSize = Number(ctx.message?.text ?? '')
 
-    if (!Number.isFinite(teamSize) || !Number.isFinite(teamSize)) {
+    if (!Number.isInteger(teamSize)) {
         return ctx.reply('The team size should be an integer. Try again, please.')
     }
 
