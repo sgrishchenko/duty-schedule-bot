@@ -21,7 +21,7 @@ bot.command('newschedule', async ctx => {
     return ctx.reply('Input a list of your team members (each name should be on a new line):')
 });
 
-bot.hears(/.*/, async ctx => {
+bot.hears(/^[^\/].*/, async ctx => {
     const {chat} = ctx;
     if (!chat) return;
 
@@ -50,25 +50,6 @@ bot.hears(/.*/, async ctx => {
                     inline_keyboard: [intervalOptions]
                 }
             })
-        }
-        case DialogState.Interval: {
-            const interval = ctx.message?.text as Interval;
-
-            if (!Object.values(Interval).includes(interval)) {
-                return ctx.reply('You have input an unsupported interval. Try again, please.', {
-                    reply_markup: {
-                        inline_keyboard: [intervalOptions]
-                    }
-                })
-            }
-
-            await dutyScheduleDraftStorage.set(chat.id, {
-                ...draft,
-                interval,
-            })
-            await dialogStateStorage.set(chat.id, DialogState.Time)
-
-            return ctx.reply('Input times of day when the duty schedule notification should be sent (in 24:00 format):')
         }
         case DialogState.Time: {
             const [hours, minutes] = (ctx.message?.text ?? '')
@@ -128,6 +109,26 @@ bot.hears(/.*/, async ctx => {
 
             return ctx.reply(JSON.stringify(dutySchedule))
         }
+    }
+})
+
+bot.action(Object.values(Interval), async ctx => {
+    const {chat} = ctx;
+    if (!chat) return;
+
+    const dialogState = await dialogStateStorage.get(chat.id);
+    const draft = await dutyScheduleDraftStorage.get(chat.id);
+
+    if (dialogState === DialogState.Interval) {
+        const interval = (ctx.callbackQuery?.message ?? '') as Interval
+
+        await dutyScheduleDraftStorage.set(chat.id, {
+            ...draft,
+            interval,
+        })
+        await dialogStateStorage.set(chat.id, DialogState.Time)
+
+        return ctx.reply('Input times of day when the duty schedule notification should be sent (in 24:00 format):')
     }
 })
 
