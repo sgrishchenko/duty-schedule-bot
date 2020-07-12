@@ -7,7 +7,7 @@ export class DialogStateStorage extends Storage<DialogState> {
         super(StorageKey.DialogState);
     }
 
-    async get(chatId: number): Promise<DialogState | null> {
+    async get(chatId: number): Promise<DialogState> {
         return await super.get(chatId) ?? DialogState.Members;
     }
 }
