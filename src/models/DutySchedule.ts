@@ -1,8 +1,8 @@
-import {Period} from "./Period";
+import {Interval} from "./Interval";
 
 export interface DutySchedule {
     members: string[],
-    period: Period,
+    interval: Interval,
     time: {
         hours: number,
         minutes: number,
