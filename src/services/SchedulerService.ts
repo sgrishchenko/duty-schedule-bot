@@ -1,9 +1,8 @@
-import {Message} from "telegraf/typings/telegram-types";
 import {dutyScheduleStorage} from "../storages/DutyScheduleStorage";
 import {Scheduler} from "./Scheduler";
 import {DutySchedule} from "../models/DutySchedule";
 
-export type SendMessage = (chatId: number, text: string) => Promise<Message>
+export type SendMessage = (chatId: number, text: string) => void
 
 export class SchedulerService {
     private schedulers: Partial<Record<number, Scheduler>> = {}

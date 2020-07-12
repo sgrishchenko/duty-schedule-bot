@@ -52,7 +52,11 @@ bot.telegram.setWebhook(`${BOT_URL}/bot`)
     });
 
 schedulerService
-    .init(bot.telegram.sendMessage)
+    .init((chatId, text) => {
+        bot.telegram.sendMessage(chatId, text).catch(error => {
+            console.log(error)
+        });
+    })
     .catch(error => {
         console.log(error)
     })
