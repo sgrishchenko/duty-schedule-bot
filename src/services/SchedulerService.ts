@@ -1,18 +1,24 @@
-import {dutyScheduleStorage} from "../storages/DutyScheduleStorage";
-import {Scheduler} from "./Scheduler";
+import {inject, injectable} from "inversify";
+import {Types} from "../types";
+import {DutyScheduleStorage} from "../storages/DutyScheduleStorage";
 import {DutySchedule} from "../models/DutySchedule";
+import {Scheduler} from "./Scheduler";
 
-export type SendMessage = (chatId: number, text: string) => void
-
+@injectable()
 export class SchedulerService {
     private schedulers: Partial<Record<number, Scheduler>> = {}
-    private sendMessage?: SendMessage
+    private sendMessage?: (chatId: number, text: string) => void
 
-    public async init(sendMessage: SendMessage) {
+    public constructor(
+        @inject(Types.DutyScheduleStorage) private dutyScheduleStorage: DutyScheduleStorage
+    ) {
+    }
+
+    public async init(sendMessage: (chatId: number, text: string) => void) {
         this.schedulers = {};
         this.sendMessage = sendMessage;
 
-        const dutySchedules = await dutyScheduleStorage.getAll();
+        const dutySchedules = await this.dutyScheduleStorage.getAll();
 
         for (const entry of Object.entries(dutySchedules)) {
             const [key, dutySchedule] = entry;
@@ -23,9 +29,21 @@ export class SchedulerService {
     }
 
     private createScheduler(chatId: number, dutySchedule: DutySchedule) {
-        this.schedulers[chatId] = new Scheduler(chatId, dutySchedule, team => {
+        this.schedulers[chatId] = new Scheduler(
+            chatId,
+            dutySchedule,
+            this.createHandleCallback(chatId)
+        )
+    }
+
+    private createHandleCallback(chatId: number) {
+        return (team: string[], dutySchedule: DutySchedule) => {
             this.sendMessage?.(chatId, 'Now on duty:\n' + team.join('\n'))
-        })
+
+            this.dutyScheduleStorage.set(chatId, dutySchedule).catch(error => {
+                console.log(error)
+            })
+        }
     }
 
     public updateScheduler(chatId: number, dutySchedule: DutySchedule) {
@@ -39,5 +57,3 @@ export class SchedulerService {
         this.createScheduler(chatId, dutySchedule);
     }
 }
-
-export const schedulerService = new SchedulerService()

@@ -1,5 +1,4 @@
 import {DutySchedule} from "../models/DutySchedule";
-import {dutyScheduleStorage} from "../storages/DutyScheduleStorage";
 
 export class Scheduler {
     private readonly startTimeout: NodeJS.Timeout;
@@ -10,7 +9,7 @@ export class Scheduler {
     public constructor(
         private chatId: number,
         private dutySchedule: DutySchedule,
-        private handleCallback: (team: string[]) => void
+        private handleCallback: (team: string[], dutySchedule: DutySchedule) => void
     ) {
         const now = new Date();
 
@@ -47,13 +46,11 @@ export class Scheduler {
             team.push(members[memberIndex])
         }
 
-        this.handleCallback(team)
-
         this.dutySchedule.pointer = (members.length + pointer + 1) % members.length;
 
-        dutyScheduleStorage.set(this.chatId, this.dutySchedule).catch(error => {
-            console.log(error)
-        })
+        this.handleCallback(team, this.dutySchedule)
+
+
     }
 
     public destroy() {

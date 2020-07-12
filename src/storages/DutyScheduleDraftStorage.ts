@@ -1,15 +1,20 @@
-import {DutyScheduleDraft} from "../models/DutySchedule";
-import {StorageKey} from "./StorageKey";
+import {inject, injectable} from "inversify";
+import {Types} from "../types";
 import {Storage} from "./Storage";
+import {StorageKey} from "./StorageKey";
+import {RedisService} from "../services/RedisService";
+import {DutyScheduleDraft} from "../models/DutySchedule";
 
+@injectable()
 export class DutyScheduleDraftStorage extends Storage<DutyScheduleDraft> {
-    public constructor() {
-        super(StorageKey.DutyScheduleDrafts);
+    public constructor(
+        @inject(Types.RedisService) redisService: RedisService,
+    ) {
+        super(redisService, StorageKey.DutyScheduleDrafts);
     }
 
-    async get(chatId: number): Promise<DutyScheduleDraft> {
+    /** @override */
+    public async get(chatId: number): Promise<DutyScheduleDraft> {
         return await super.get(chatId) ?? {};
     }
 }
-
-export const dutyScheduleDraftStorage = new DutyScheduleDraftStorage()

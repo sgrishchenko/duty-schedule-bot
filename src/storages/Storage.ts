@@ -1,14 +1,17 @@
-import {hget, hgetall, hset, hdel} from "../redisClient";
 import {StorageKey} from "./StorageKey";
+import {RedisService} from "../services/RedisService";
+import {injectable, unmanaged} from "inversify";
 
+@injectable()
 export abstract class Storage<Type> {
     protected constructor(
-        private storageKey: StorageKey
+        @unmanaged() private redisService: RedisService,
+        @unmanaged() private storageKey: StorageKey
     ) {
     }
 
     public async get(chatId: number): Promise<Type | null> {
-        const reply = await hget(
+        const reply = await this.redisService.get(
             this.storageKey,
             String(chatId)
         )
@@ -19,20 +22,18 @@ export abstract class Storage<Type> {
     }
 
     public async getAll(): Promise<Record<number, Type>> {
-        const reply = await hgetall(this.storageKey);
+        const reply = await this.redisService.getAll(this.storageKey);
 
-        return reply !== null
-            ? Object.fromEntries(
-                Object.entries(reply).map(([key, value]) => {
-                    return [key, JSON.parse(value)]
-                })
-            )
-            : {}
+        return Object.fromEntries(
+            Object.entries(reply ?? {}).map(([key, value]) => {
+                return [key, JSON.parse(value)]
+            })
+        )
     }
 
 
     public async set(chatId: number, entity: Type): Promise<void> {
-        await hset(
+        await this.redisService.set(
             this.storageKey,
             String(chatId),
             JSON.stringify(entity)
@@ -40,7 +41,7 @@ export abstract class Storage<Type> {
     }
 
     public async delete(chatId: number): Promise<void> {
-        await hdel(
+        await this.redisService.delete(
             this.storageKey,
             String(chatId)
         )

@@ -6,14 +6,16 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node -r dotenv/config lib/index.js",
+    "start": "node lib/index.js",
     "postinstall": "npm run build"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "inversify": "^5.0.1",
     "redis": "^3.0.2",
+    "reflect-metadata": "^0.1.13",
     "telegraf": "^3.38.0"
   },
   "devDependencies": {

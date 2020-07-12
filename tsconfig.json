@@ -9,6 +9,8 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "sourceMap": true,
-    "outDir": "lib"
+    "outDir": "lib",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }
