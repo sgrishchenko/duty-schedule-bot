@@ -49,8 +49,6 @@ export class Scheduler {
         this.dutySchedule.pointer = (members.length + pointer + 1) % members.length;
 
         this.handleCallback(team, this.dutySchedule)
-
-
     }
 
     public destroy() {
