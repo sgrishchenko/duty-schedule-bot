@@ -20,15 +20,11 @@ export abstract class Storage<Type> {
 
 
     public async set(chatId: number, entity: Type): Promise<void> {
-        const reply = await hset(
+        await hset(
             this.storageKey,
             String(chatId),
             JSON.stringify(entity)
         )
-
-        if (reply === 0) {
-            throw new Error(`An entity for ${chatId} hasn't been added in ${this.storageKey} storage.`)
-        }
     }
 
     public async delete(chatId: number): Promise<void> {
