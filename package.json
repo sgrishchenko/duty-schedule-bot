@@ -2,7 +2,6 @@
   "name": "duty-schedule-bot",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -20,8 +19,5 @@
   "devDependencies": {
     "@types/redis": "^2.8.25",
     "typescript": "^3.9.6"
-  },
-  "engines": {
-    "node": "13.11.0"
   }
 }
