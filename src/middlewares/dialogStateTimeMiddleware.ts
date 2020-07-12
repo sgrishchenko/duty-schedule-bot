@@ -13,15 +13,19 @@ export const dialogStateTimeMiddleware: Middleware<DialogStateContext> = async (
 
     const [hours, minutes] = (ctx.message?.text ?? '')
         .split(':')
-        .map(Number)
-        .filter(Number.isFinite)
-        .filter(Number.isInteger);
+        .map(Number);
 
-    if (!hours || hours < 0 || hours > 23) {
+    if (
+        !Number.isFinite(hours) || !Number.isInteger(hours)
+        || hours < 0 || hours > 23
+    ) {
         return ctx.reply('You have input hours in a wrong format. Try again, please.')
     }
 
-    if (!minutes || minutes < 0 || minutes > 59) {
+    if (
+        !Number.isFinite(minutes) || !Number.isInteger(minutes)
+        || minutes < 0 || minutes > 59
+    ) {
         return ctx.reply('You have input minutes in a wrong format. Try again, please.')
     }
 
