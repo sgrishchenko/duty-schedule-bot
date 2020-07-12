@@ -90,8 +90,10 @@ bot.hears(/^[^\/].*/, async ctx => {
                 await dutyScheduleDraftStorage.delete(chat.id);
                 await dialogStateStorage.set(chat.id, DialogState.Members);
 
-                return ctx.reply('Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n'
-                    + 'Input a list of your team members (each name should be on a new line)')
+                return ctx.reply(
+                    'Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n' +
+                    'Input a list of your team members (each name should be on a new line):'
+                )
             }
 
             await dutyScheduleDraftStorage.delete(chat.id);
@@ -154,8 +156,14 @@ bot.command('deleteschedule', async ctx => {
     return ctx.reply('The current duty schedule has been removed. Send /newschedule to create a new duty schedule.')
 });
 
-bot.command('help', ctx => {
-    return ctx.reply('This bot will help you to create a duty schedule. Send /newschedule to create a new duty schedule.');
+bot.command(['start', 'help'], ctx => {
+    return ctx.reply(
+        'This bot will help you to create a duty schedule.\n' +
+        'newschedule - create a new duty schedule\n' +
+        'currentschedule - show the current duty schedule\n' +
+        'deleteschedule - delete the current duty schedule\n' +
+        'help - show list of commands'
+    );
 });
 
 bot.telegram.setWebhook(`${BOT_URL}/bot`)
