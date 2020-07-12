@@ -40,10 +40,9 @@ export class Scheduler {
 
     private handleSchedule() {
         const {pointer, members} = this.dutySchedule;
-        const nextPointer = (members.length + pointer + 1) % members.length;
+        this.handleCallback(pointer)
 
-        this.dutySchedule.pointer = nextPointer;
-        this.handleCallback(nextPointer)
+        this.dutySchedule.pointer = (members.length + pointer + 1) % members.length;
 
         dutyScheduleStorage.set(this.chatId, this.dutySchedule).catch(error => {
             console.log(error)
