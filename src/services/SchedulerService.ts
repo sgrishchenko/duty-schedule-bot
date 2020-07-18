@@ -44,14 +44,17 @@ export class SchedulerService {
     );
   }
 
-  public updateScheduler(chatId: number, dutySchedule: DutySchedule) {
-    const existingScheduler = this.schedulers[chatId];
+  public destroyScheduler(chatId: number) {
+    const scheduler = this.schedulers[chatId];
 
-    if (existingScheduler) {
-      existingScheduler.destroy();
+    if (scheduler) {
+      scheduler.destroy();
       delete this.schedulers[chatId];
     }
+  }
 
+  public updateScheduler(chatId: number, dutySchedule: DutySchedule) {
+    this.destroyScheduler(chatId);
     this.createScheduler(chatId, dutySchedule);
   }
 }
