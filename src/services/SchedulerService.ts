@@ -34,7 +34,7 @@ export class SchedulerService {
       dutySchedule,
       (team: string[], pointer: number) => {
         const message = `
-\u23F0 *Now on duty:*\n" +
+\u23F0 *Now on duty:*
 ${team.map((member) => `    \u{1F464} ${member}`).join("\n")}
         `;
 
