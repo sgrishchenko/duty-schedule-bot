@@ -41,7 +41,7 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
 
     if (!Number.isInteger(teamSize)) {
       return ctx.reply(
-        "The team size should be an integer. Try again, please."
+        "The team size should be an integer. Please try again, or input /cancel for canceling."
       );
     }
 
@@ -53,7 +53,7 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
 
       return ctx.reply(
         "Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n" +
-          "Input a list of your team members (each name should be on a new line):"
+          "Input a list of your team members (each name should be on a new line, input /cancel for canceling):"
       );
     }
 
@@ -65,7 +65,7 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
       interval,
       time,
       teamSize,
-      pointer: 0,
+      pointer: -1, // this is initial state before the first duty
     };
 
     await this.dutyScheduleStorage.set(ctx.chat.id, dutySchedule);

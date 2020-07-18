@@ -33,7 +33,12 @@ export class SchedulerService {
       chatId,
       dutySchedule,
       (team: string[], pointer: number) => {
-        this.sendMessage?.(chatId, "Now on duty:\n" + team.join("\n"));
+        const message = `
+\u23F0 *Now on duty:*\n" +
+${team.map((member) => `    \u{1F464} ${member}`).join("\n")}
+        `;
+
+        this.sendMessage?.(chatId, message);
 
         dutySchedule.pointer = pointer;
 

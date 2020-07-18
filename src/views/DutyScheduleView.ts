@@ -13,18 +13,22 @@ export class DutyScheduleView {
   public render(schedule: DutySchedule) {
     const { members, pointer, teamSize, interval, time } = schedule;
 
+    const internalView = this.intervalView.render(interval);
+    const timeView = `${time.hours}:${String(time.minutes).padStart(2, "0")}`;
+
     return `
-:busts_in_silhouette: **Current list of members**:
-${members.map((member, index) => {
-  const isDuty = index >= pointer && index < pointer + teamSize;
+\u{1F465} *Current list of members*:
+${members
+  .map((member, index) => {
+    const isDuty =
+      pointer != -1 && index >= pointer && index < pointer + teamSize;
 
-  return `* ${member} ${isDuty ? ":white_check_mark:" : ""}  \n`;
-})}
+    return `    ${isDuty ? "\u{23F3}" : "\u{1F4A4}"} ${member}`;
+  })
+  .join("\n")}
 
-_The :white_check_mark: sign marks those who were on duty the last time._
-
-:alarm_clock: **You will be notified**:
-${this.intervalView.render(interval)} at ${time.hours}:${time.minutes}
-  `;
+\u23F0 *You will be notified*:
+${internalView} at ${timeView}
+    `;
   }
 }

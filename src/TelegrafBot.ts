@@ -13,6 +13,7 @@ import { DialogStateTeamSizeMiddleware } from "./middlewares/DialogStateTeamSize
 import { SchedulerService } from "./services/SchedulerService";
 import { DialogStateContext } from "./contexts/DialogStateContext";
 import { Interval } from "./models/Interval";
+import { CancelMiddleware } from "./middlewares/CancelMiddleware";
 
 const PORT = Number(process.env.PORT) ?? 3000;
 
@@ -24,6 +25,8 @@ export class TelegrafBot {
   public constructor(
     @inject(Types.HelpMiddleware)
     helpMiddleware: HelpMiddleware,
+    @inject(Types.CancelMiddleware)
+    cancelMiddleware: CancelMiddleware,
 
     @inject(Types.NewScheduleMiddleware)
     newScheduleMiddleware: NewScheduleMiddleware,
@@ -50,6 +53,8 @@ export class TelegrafBot {
 
     bot.start(helpMiddleware);
     bot.help(helpMiddleware);
+
+    bot.command("cancel", cancelMiddleware);
 
     bot.command("newschedule", newScheduleMiddleware);
 
@@ -83,9 +88,11 @@ export class TelegrafBot {
 
     schedulerService
       .init((chatId, text) => {
-        bot.telegram.sendMessage(chatId, text).catch((error) => {
-          console.log(error);
-        });
+        bot.telegram
+          .sendMessage(chatId, text, { parse_mode: "MarkdownV2" })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);

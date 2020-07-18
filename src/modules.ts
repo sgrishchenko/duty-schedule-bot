@@ -16,6 +16,7 @@ import { DialogStateTimeMiddleware } from "./middlewares/DialogStateTimeMiddlewa
 import { SchedulerService } from "./services/SchedulerService";
 import { IntervalView } from "./views/IntervalView";
 import { DutyScheduleView } from "./views/DutyScheduleView";
+import { CancelMiddleware } from "./middlewares/CancelMiddleware";
 
 export const storages = new ContainerModule((bind) => {
   bind<RedisService>(Types.RedisService).to(RedisService);
@@ -34,6 +35,7 @@ export const views = new ContainerModule((bind) => {
 
 export const middlewares = new ContainerModule((bind) => {
   bind<HelpMiddleware>(Types.HelpMiddleware).to(HelpMiddleware);
+  bind<CancelMiddleware>(Types.CancelMiddleware).to(CancelMiddleware);
 
   bind<NewScheduleMiddleware>(Types.NewScheduleMiddleware).to(
     NewScheduleMiddleware

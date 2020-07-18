@@ -13,10 +13,4 @@ export class DialogStateStorage extends Storage<DialogState> {
   ) {
     super(redisService, StorageKey.DialogState);
   }
-
-  /** @override */
-  public async get(chatId: number): Promise<DialogState> {
-    const result = await super.get(chatId);
-    return result ?? DialogState.Members;
-  }
 }

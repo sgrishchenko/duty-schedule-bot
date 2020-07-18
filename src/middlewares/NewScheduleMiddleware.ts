@@ -20,7 +20,7 @@ export class NewScheduleMiddleware extends Middleware<TelegrafContext> {
 
     await this.dialogStateStorage.set(chat.id, DialogState.Members);
     return ctx.reply(
-      "Input a list of your team members (each name should be on a new line):"
+      "Input a list of your team members (each name should be on a new line, input /cancel for canceling):"
     );
   }
 }

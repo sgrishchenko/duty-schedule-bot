@@ -74,12 +74,12 @@ export class Scheduler {
     const { members, teamSize } = this.dutySchedule;
     const team = [];
 
+    this.pointer = this.getMemberIndex(this.pointer + 1);
+
     for (let i = 0; i < Math.min(teamSize, members.length); i++) {
       const memberIndex = this.getMemberIndex(this.pointer + i);
       team.push(members[memberIndex]);
     }
-
-    this.pointer = this.getMemberIndex(this.pointer + 1);
 
     this.handleCallback(team, this.pointer);
   }

@@ -36,7 +36,7 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     if (members.length < 0) {
       return ctx.reply(
-        "You have input an empty list of team members. Try again, please."
+        "You have input an empty list of team members. Please try again, or input /cancel for canceling."
       );
     }
 

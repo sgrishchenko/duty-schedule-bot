@@ -25,7 +25,7 @@ export class DeleteScheduleMiddleware extends Middleware<TelegrafContext> {
     this.schedulerService.destroyScheduler(chat.id);
 
     return ctx.reply(
-      "The current duty schedule has been removed. " +
+      "The current duty schedule has been deleted. " +
         "Send /newschedule to create a new duty schedule."
     );
   }
