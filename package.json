@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "format": "prettier --write .",
     "build": "tsc",
     "start": "node lib/index.js",
     "postinstall": "npm run build"
@@ -12,14 +13,16 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/redis": "^2.8.25",
     "dotenv": "^8.2.0",
     "inversify": "^5.0.1",
+    "moment": "^2.27.0",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "telegraf": "^3.38.0"
   },
   "devDependencies": {
-    "@types/redis": "^2.8.25",
+    "prettier": "^2.0.5",
     "typescript": "^3.9.6"
   }
 }
