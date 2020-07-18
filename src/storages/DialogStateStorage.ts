@@ -7,7 +7,10 @@ import { DialogState } from "../models/DialogState";
 
 @injectable()
 export class DialogStateStorage extends Storage<DialogState> {
-  public constructor(@inject(Types.RedisService) redisService: RedisService) {
+  public constructor(
+    @inject(Types.RedisService)
+    redisService: RedisService
+  ) {
     super(redisService, StorageKey.DialogState);
   }
 

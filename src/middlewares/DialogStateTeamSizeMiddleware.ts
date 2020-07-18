@@ -8,6 +8,7 @@ import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
 import { SchedulerService } from "../services/SchedulerService";
 import { DialogState } from "../models/DialogState";
 import { DutySchedule } from "../models/DutySchedule";
+import { DutyScheduleView } from "../views/DutyScheduleView";
 
 @injectable()
 export class DialogStateTeamSizeMiddleware extends Middleware<
@@ -21,7 +22,10 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
     @inject(Types.DutyScheduleStorage)
     private dutyScheduleStorage: DutyScheduleStorage,
 
-    @inject(Types.SchedulerService) private schedulerService: SchedulerService
+    @inject(Types.SchedulerService)
+    private schedulerService: SchedulerService,
+    @inject(Types.DutyScheduleView)
+    private dutyScheduleView: DutyScheduleView
   ) {
     super();
   }
@@ -67,6 +71,6 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
     await this.dutyScheduleStorage.set(ctx.chat.id, dutySchedule);
     this.schedulerService.updateScheduler(ctx.chat.id, dutySchedule);
 
-    return ctx.reply(JSON.stringify(dutySchedule, null, 2));
+    return ctx.replyWithMarkdown(this.dutyScheduleView.render(dutySchedule));
   }
 }

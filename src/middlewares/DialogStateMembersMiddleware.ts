@@ -5,7 +5,7 @@ import { DialogStateContext } from "../contexts/DialogStateContext";
 import { DialogStateStorage } from "../storages/DialogStateStorage";
 import { DutyScheduleDraftStorage } from "../storages/DutyScheduleDraftStorage";
 import { DialogState } from "../models/DialogState";
-import { intervalOptions } from "../models/Interval";
+import { IntervalView } from "../views/IntervalView";
 
 @injectable()
 export class DialogStateMembersMiddleware extends Middleware<
@@ -15,7 +15,9 @@ export class DialogStateMembersMiddleware extends Middleware<
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
     @inject(Types.DutyScheduleDraftStorage)
-    private dutyScheduleDraftStorage: DutyScheduleDraftStorage
+    private dutyScheduleDraftStorage: DutyScheduleDraftStorage,
+    @inject(Types.IntervalView)
+    private intervalView: IntervalView
   ) {
     super();
   }
@@ -45,7 +47,7 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     return ctx.reply("Input an interval for duty schedule notifications:", {
       reply_markup: {
-        inline_keyboard: [intervalOptions],
+        inline_keyboard: [this.intervalView.intervalOptions],
       },
     });
   }

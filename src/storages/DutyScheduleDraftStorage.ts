@@ -7,7 +7,10 @@ import { DutyScheduleDraft } from "../models/DutySchedule";
 
 @injectable()
 export class DutyScheduleDraftStorage extends Storage<DutyScheduleDraft> {
-  public constructor(@inject(Types.RedisService) redisService: RedisService) {
+  public constructor(
+    @inject(Types.RedisService)
+    redisService: RedisService
+  ) {
     super(redisService, StorageKey.DutyScheduleDrafts);
   }
 

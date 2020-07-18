@@ -3,12 +3,15 @@ import { Types } from "../types";
 import { Middleware } from "./Middleware";
 import { TelegrafContext } from "telegraf/typings/context";
 import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
+import { DutyScheduleView } from "../views/DutyScheduleView";
 
 @injectable()
 export class CurrentScheduleMiddleware extends Middleware<TelegrafContext> {
   public constructor(
     @inject(Types.DutyScheduleStorage)
-    private dutyScheduleStorage: DutyScheduleStorage
+    private dutyScheduleStorage: DutyScheduleStorage,
+    @inject(Types.DutyScheduleView)
+    private dutyScheduleView: DutyScheduleView
   ) {
     super();
   }
@@ -26,6 +29,6 @@ export class CurrentScheduleMiddleware extends Middleware<TelegrafContext> {
       );
     }
 
-    return ctx.reply(JSON.stringify(dutySchedule, null, 2));
+    return ctx.replyWithMarkdown(this.dutyScheduleView.render(dutySchedule));
   }
 }

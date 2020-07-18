@@ -14,6 +14,8 @@ import { DialogStateIntervalMiddleware } from "./middlewares/DialogStateInterval
 import { DialogStateTeamSizeMiddleware } from "./middlewares/DialogStateTeamSizeMiddleware";
 import { DialogStateTimeMiddleware } from "./middlewares/DialogStateTimeMiddleware";
 import { SchedulerService } from "./services/SchedulerService";
+import { IntervalView } from "./views/IntervalView";
+import { DutyScheduleView } from "./views/DutyScheduleView";
 
 export const storages = new ContainerModule((bind) => {
   bind<RedisService>(Types.RedisService).to(RedisService);
@@ -23,6 +25,11 @@ export const storages = new ContainerModule((bind) => {
     DutyScheduleDraftStorage
   );
   bind<DutyScheduleStorage>(Types.DutyScheduleStorage).to(DutyScheduleStorage);
+});
+
+export const views = new ContainerModule((bind) => {
+  bind<IntervalView>(Types.IntervalView).to(IntervalView);
+  bind<DutyScheduleView>(Types.DutyScheduleView).to(DutyScheduleView);
 });
 
 export const middlewares = new ContainerModule((bind) => {

@@ -7,6 +7,9 @@ export const Types = {
 
   SchedulerService: Symbol.for("SchedulerService"),
 
+  IntervalView: Symbol.for("IntervalView"),
+  DutyScheduleView: Symbol.for("DutyScheduleView"),
+
   HelpMiddleware: Symbol.for("HelpMiddleware"),
 
   NewScheduleMiddleware: Symbol.for("NewScheduleMiddleware"),

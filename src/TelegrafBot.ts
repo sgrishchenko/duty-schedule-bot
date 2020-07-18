@@ -22,7 +22,8 @@ const BOT_TOKEN = process.env.BOT_TOKEN ?? "";
 @injectable()
 export class TelegrafBot {
   public constructor(
-    @inject(Types.HelpMiddleware) helpMiddleware: HelpMiddleware,
+    @inject(Types.HelpMiddleware)
+    helpMiddleware: HelpMiddleware,
 
     @inject(Types.NewScheduleMiddleware)
     newScheduleMiddleware: NewScheduleMiddleware,
@@ -42,7 +43,8 @@ export class TelegrafBot {
     @inject(Types.DialogStateTeamSizeMiddleware)
     dialogStateTeamSizeMiddleware: DialogStateTeamSizeMiddleware,
 
-    @inject(Types.SchedulerService) schedulerService: SchedulerService
+    @inject(Types.SchedulerService)
+    schedulerService: SchedulerService
   ) {
     const bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
 

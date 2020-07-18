@@ -11,7 +11,8 @@ export class DeleteScheduleMiddleware extends Middleware<TelegrafContext> {
     @inject(Types.DutyScheduleStorage)
     private dutyScheduleStorage: DutyScheduleStorage,
 
-    @inject(Types.SchedulerService) private schedulerService: SchedulerService
+    @inject(Types.SchedulerService)
+    private schedulerService: SchedulerService
   ) {
     super();
   }
