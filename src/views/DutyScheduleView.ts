@@ -18,7 +18,7 @@ export class DutyScheduleView {
 ${members.map((member, index) => {
   const isDuty = index >= pointer && index < pointer + teamSize;
 
-  return `* ${member} ${isDuty ? ":white_check_mark:" : ""}  `;
+  return `* ${member} ${isDuty ? ":white_check_mark:" : ""}  \n`;
 })}
 
 _The :white_check_mark: sign marks those who were on duty the last time._
