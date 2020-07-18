@@ -26,13 +26,13 @@ export class Scheduler {
   }
 
   private planNextHandling(timestamp = now()) {
-    this.handleSchedule();
-
     const now = moment();
     const next = moment(this.getNextIntervalTime(timestamp));
     const delayTime = next.diff(now);
 
     this.handleTimeout = setTimeout(() => {
+      this.handleSchedule();
+
       this.planNextHandling();
     }, delayTime);
   }
