@@ -116,9 +116,9 @@ export class TelegrafBot {
 
   private requestListener: RequestListener = (request, response) => {
     if (request.url === "/") {
-      this.bot.telegram.getWebhookInfo().then((info) => {
+      this.bot.telegram.getWebhookInfo().then((webhookInfo) => {
         const result = {
-          telegramIsHooked: this.bot.webhookReply,
+          telegramIsHooked: webhookInfo.url.includes(BOT_URL),
           redisIsConnected: this.redisService.isConnected(),
         };
 
