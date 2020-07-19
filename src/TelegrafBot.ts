@@ -82,14 +82,14 @@ export class TelegrafBot {
     );
 
     bot.telegram
-      .setWebhook(`https://${BOT_WEBHOOK_HOST}/${BOT_TOKEN}`)
+      .setWebhook(`https://${BOT_WEBHOOK_HOST}/bot${BOT_TOKEN}`)
       .then(() => {
         if (NODE_ENV === "production") {
           console.log("Running the bot in webhook mode...");
           return bot.launch({
             webhook: {
               port: PORT,
-              hookPath: BOT_TOKEN,
+              hookPath: `/bot${BOT_TOKEN}`,
             },
           });
         } else {
