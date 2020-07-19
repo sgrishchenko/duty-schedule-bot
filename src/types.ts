@@ -9,6 +9,7 @@ export const Types = {
 
   IntervalView: Symbol.for("IntervalView"),
   DutyScheduleView: Symbol.for("DutyScheduleView"),
+  NotificationView: Symbol.for("NotificationView"),
 
   HelpMiddleware: Symbol.for("HelpMiddleware"),
   CancelMiddleware: Symbol.for("CancelMiddleware"),
@@ -22,6 +23,8 @@ export const Types = {
   DialogStateIntervalMiddleware: Symbol.for("DialogStateIntervalMiddleware"),
   DialogStateTeamSizeMiddleware: Symbol.for("DialogStateTeamSizeMiddleware"),
   DialogStateTimeMiddleware: Symbol.for("DialogStateTimeMiddleware"),
+
+  PingService: Symbol.for("PingService"),
 
   TelegrafBot: Symbol.for("TelegrafBot"),
 };

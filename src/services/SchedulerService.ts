@@ -3,6 +3,7 @@ import { Types } from "../types";
 import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
 import { DutySchedule } from "../models/DutySchedule";
 import { Scheduler } from "./Scheduler";
+import { NotificationView } from "../views/NotificationView";
 
 @injectable()
 export class SchedulerService {
@@ -11,7 +12,9 @@ export class SchedulerService {
 
   public constructor(
     @inject(Types.DutyScheduleStorage)
-    private dutyScheduleStorage: DutyScheduleStorage
+    private dutyScheduleStorage: DutyScheduleStorage,
+    @inject(Types.NotificationView)
+    private notificationView: NotificationView
   ) {}
 
   public async init(sendMessage: (chatId: number, text: string) => void) {
@@ -33,12 +36,7 @@ export class SchedulerService {
       chatId,
       dutySchedule,
       (team: string[], pointer: number) => {
-        const message = `
-\u23F0 *Now on duty:*
-${team.map((member) => `    \u{1F464} ${member}`).join("\n")}
-        `;
-
-        this.sendMessage?.(chatId, message);
+        this.sendMessage?.(chatId, this.notificationView.render(team));
 
         dutySchedule.pointer = pointer;
 

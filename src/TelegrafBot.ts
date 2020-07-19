@@ -14,11 +14,13 @@ import { SchedulerService } from "./services/SchedulerService";
 import { DialogStateContext } from "./contexts/DialogStateContext";
 import { Interval } from "./models/Interval";
 import { CancelMiddleware } from "./middlewares/CancelMiddleware";
+import { PingService } from "./services/PingService";
 
+const NODE_ENV = process.env.NODE_ENV ?? "development";
 const PORT = Number(process.env.PORT) ?? 3000;
 
-const BOT_URL = process.env.BOT_URL ?? "";
 const BOT_TOKEN = process.env.BOT_TOKEN ?? "";
+const BOT_WEBHOOK_HOST = process.env.BOT_WEBHOOK_HOST ?? "";
 
 @injectable()
 export class TelegrafBot {
@@ -47,7 +49,10 @@ export class TelegrafBot {
     dialogStateTeamSizeMiddleware: DialogStateTeamSizeMiddleware,
 
     @inject(Types.SchedulerService)
-    schedulerService: SchedulerService
+    schedulerService: SchedulerService,
+
+    @inject(Types.PingService)
+    pingService: PingService
   ) {
     const bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
 
@@ -77,10 +82,20 @@ export class TelegrafBot {
     );
 
     bot.telegram
-      .setWebhook(`${BOT_URL}/bot`)
+      .setWebhook(`https://${BOT_WEBHOOK_HOST}/${BOT_TOKEN}`)
       .then(() => {
-        bot.startWebhook("/bot", null, PORT);
-        return bot.launch();
+        if (NODE_ENV === "production") {
+          console.log("Running the bot in webhook mode...");
+          return bot.launch({
+            webhook: {
+              port: PORT,
+              hookPath: BOT_TOKEN,
+            },
+          });
+        } else {
+          console.log("Running the bot in long-polling mode...");
+          return bot.launch();
+        }
       })
       .then(() => {
         console.log("Duty Schedule Bot is started!");
@@ -97,5 +112,7 @@ export class TelegrafBot {
       .catch((error) => {
         console.log(error);
       });
+
+    pingService.init(() => bot.telegram.getWebhookInfo());
   }
 }
