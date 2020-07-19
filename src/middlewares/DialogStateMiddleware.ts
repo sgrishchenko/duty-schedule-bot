@@ -16,6 +16,7 @@ export class DialogStateMiddleware extends Middleware<TelegrafContext> {
 
   public async handle(ctx: TelegrafContext, next: () => Promise<void>) {
     const { chat } = ctx;
+    console.log("chatId: ", chat?.id);
     if (!chat) return;
 
     (ctx as DialogStateContext).dialogState = await this.dialogStateStorage.get(
