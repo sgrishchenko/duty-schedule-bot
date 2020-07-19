@@ -36,6 +36,7 @@ export class DialogStateIntervalMiddleware extends Middleware<
         reply_markup: {
           keyboard: [this.intervalView.intervalOptions],
           resize_keyboard: true,
+          one_time_keyboard: true,
         },
       });
     }
