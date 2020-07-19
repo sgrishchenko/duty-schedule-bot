@@ -93,7 +93,6 @@ export class TelegrafBot {
       console.log("Running the bot in webhook mode...");
 
       await this.bot.telegram.setWebhook(`${BOT_URL}/bot${BOT_TOKEN}`);
-      await this.bot.telegram.deleteWebhook();
 
       const server = createServer(this.requestListener);
       await new Promise((resolve) => server.listen(PORT, resolve));
