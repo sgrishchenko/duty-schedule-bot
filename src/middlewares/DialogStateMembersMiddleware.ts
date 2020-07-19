@@ -52,7 +52,7 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     return ctx.reply("Input an interval for duty schedule notifications:", {
       reply_markup: {
-        keyboard: [this.intervalView.intervalOptions],
+        inline_keyboard: [this.intervalView.intervalOptions],
       },
     });
   }
