@@ -18,7 +18,6 @@ import { IntervalView } from "./views/IntervalView";
 import { DutyScheduleView } from "./views/DutyScheduleView";
 import { CancelMiddleware } from "./middlewares/CancelMiddleware";
 import { NotificationView } from "./views/NotificationView";
-import { PingService } from "./services/PingService";
 
 export const storages = new ContainerModule((bind) => {
   bind<RedisService>(Types.RedisService).to(RedisService);
@@ -69,8 +68,4 @@ export const middlewares = new ContainerModule((bind) => {
 
 export const scheduling = new ContainerModule((bind) => {
   bind<SchedulerService>(Types.SchedulerService).to(SchedulerService);
-});
-
-export const monitoring = new ContainerModule((bind) => {
-  bind<PingService>(Types.PingService).to(PingService);
 });

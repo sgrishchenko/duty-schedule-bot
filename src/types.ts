@@ -24,7 +24,5 @@ export const Types = {
   DialogStateTeamSizeMiddleware: Symbol.for("DialogStateTeamSizeMiddleware"),
   DialogStateTimeMiddleware: Symbol.for("DialogStateTimeMiddleware"),
 
-  PingService: Symbol.for("PingService"),
-
   TelegrafBot: Symbol.for("TelegrafBot"),
 };

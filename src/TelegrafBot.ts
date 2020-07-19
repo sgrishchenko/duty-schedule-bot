@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 import { Types } from "./types";
 import Telegraf from "telegraf";
+import { createServer, RequestListener } from "http";
 import { HelpMiddleware } from "./middlewares/HelpMiddleware";
 import { NewScheduleMiddleware } from "./middlewares/NewScheduleMiddleware";
 import { CurrentScheduleMiddleware } from "./middlewares/CurrentScheduleMiddleware";
@@ -14,16 +15,17 @@ import { SchedulerService } from "./services/SchedulerService";
 import { DialogStateContext } from "./contexts/DialogStateContext";
 import { Interval } from "./models/Interval";
 import { CancelMiddleware } from "./middlewares/CancelMiddleware";
-import { PingService } from "./services/PingService";
 
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 const PORT = Number(process.env.PORT) ?? 3000;
 
+const BOT_URL = process.env.BOT_URL ?? "";
 const BOT_TOKEN = process.env.BOT_TOKEN ?? "";
-const BOT_WEBHOOK_HOST = process.env.BOT_WEBHOOK_HOST ?? "";
 
 @injectable()
 export class TelegrafBot {
+  private bot: Telegraf<DialogStateContext>;
+
   public constructor(
     @inject(Types.HelpMiddleware)
     helpMiddleware: HelpMiddleware,
@@ -49,25 +51,22 @@ export class TelegrafBot {
     dialogStateTeamSizeMiddleware: DialogStateTeamSizeMiddleware,
 
     @inject(Types.SchedulerService)
-    schedulerService: SchedulerService,
-
-    @inject(Types.PingService)
-    pingService: PingService
+    private schedulerService: SchedulerService
   ) {
-    const bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
+    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
 
-    bot.start(helpMiddleware);
-    bot.help(helpMiddleware);
+    this.bot.start(helpMiddleware);
+    this.bot.help(helpMiddleware);
 
-    bot.command("cancel", cancelMiddleware);
+    this.bot.command("cancel", cancelMiddleware);
 
-    bot.command("newschedule", newScheduleMiddleware);
+    this.bot.command("newschedule", newScheduleMiddleware);
 
-    bot.command("currentschedule", currentScheduleMiddleware);
+    this.bot.command("currentschedule", currentScheduleMiddleware);
 
-    bot.command("deleteschedule", deleteScheduleMiddleware);
+    this.bot.command("deleteschedule", deleteScheduleMiddleware);
 
-    bot.on(
+    this.bot.on(
       "message",
       dialogStateMiddleware,
       dialogStateMembersMiddleware,
@@ -75,44 +74,51 @@ export class TelegrafBot {
       dialogStateTeamSizeMiddleware
     );
 
-    bot.action(
+    this.bot.action(
       Object.values(Interval),
       dialogStateMiddleware,
       dialogStateIntervalMiddleware
     );
 
-    bot.telegram
-      .setWebhook(`https://${BOT_WEBHOOK_HOST}/bot${BOT_TOKEN}`)
-      .then(() => {
-        if (NODE_ENV === "production") {
-          console.log("Running the bot in webhook mode...");
-          return bot.launch({
-            webhook: {
-              port: PORT,
-              hookPath: `/bot${BOT_TOKEN}`,
-            },
-          });
-        } else {
-          console.log("Running the bot in long-polling mode...");
-          return bot.launch();
-        }
-      })
-      .then(() => {
-        console.log("Duty Schedule Bot is started!");
-      });
-
-    schedulerService
-      .init((chatId, text) => {
-        bot.telegram
-          .sendMessage(chatId, text, { parse_mode: "MarkdownV2" })
-          .catch((error) => {
-            console.log(error);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    pingService.init(() => bot.telegram.getWebhookInfo());
+    this.init().catch((error) => {
+      console.log(error);
+    });
   }
+
+  private async init() {
+    if (NODE_ENV === "production") {
+      console.log("Running the bot in webhook mode...");
+
+      await this.bot.telegram.setWebhook(`${BOT_URL}/bot${BOT_TOKEN}`);
+
+      const server = createServer(this.requestListener);
+      await new Promise((resolve) => server.listen(PORT, resolve));
+    } else {
+      console.log("Running the bot in long-polling mode...");
+
+      await this.bot.launch();
+    }
+
+    await this.schedulerService.init((chatId, text) => {
+      this.bot.telegram
+        .sendMessage(chatId, text, { parse_mode: "MarkdownV2" })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+
+    console.log("Duty Schedule Bot is started!");
+  }
+
+  private requestListener: RequestListener = (request, response) => {
+    if (request.url === "/") {
+      this.bot.telegram.getWebhookInfo().then((info) => {
+        response.statusCode = 200;
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify(info, null, 2));
+      });
+    } else {
+      this.bot.webhookCallback(`/bot${BOT_TOKEN}`)(request, response);
+    }
+  };
 }
