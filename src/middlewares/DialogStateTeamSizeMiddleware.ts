@@ -53,7 +53,7 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
 
       return ctx.reply(
         "Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n" +
-          "Input a list of your team members (each name should be on a new line, input /cancel for canceling):",
+          "Input a list of your team members (each name should be on a new line):",
         {
           reply_markup: {
             force_reply: true,

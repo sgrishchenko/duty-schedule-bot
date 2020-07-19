@@ -12,7 +12,6 @@ export const Types = {
   NotificationView: Symbol.for("NotificationView"),
 
   HelpMiddleware: Symbol.for("HelpMiddleware"),
-  CancelMiddleware: Symbol.for("CancelMiddleware"),
 
   NewScheduleMiddleware: Symbol.for("NewScheduleMiddleware"),
   CurrentScheduleMiddleware: Symbol.for("CurrentScheduleMiddleware"),

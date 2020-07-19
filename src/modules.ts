@@ -16,7 +16,6 @@ import { DialogStateTimeMiddleware } from "./middlewares/DialogStateTimeMiddlewa
 import { SchedulerService } from "./services/SchedulerService";
 import { IntervalView } from "./views/IntervalView";
 import { DutyScheduleView } from "./views/DutyScheduleView";
-import { CancelMiddleware } from "./middlewares/CancelMiddleware";
 import { NotificationView } from "./views/NotificationView";
 
 export const storages = new ContainerModule((bind) => {
@@ -37,7 +36,6 @@ export const views = new ContainerModule((bind) => {
 
 export const middlewares = new ContainerModule((bind) => {
   bind<HelpMiddleware>(Types.HelpMiddleware).to(HelpMiddleware);
-  bind<CancelMiddleware>(Types.CancelMiddleware).to(CancelMiddleware);
 
   bind<NewScheduleMiddleware>(Types.NewScheduleMiddleware).to(
     NewScheduleMiddleware

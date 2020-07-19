@@ -6,22 +6,32 @@ export class IntervalView {
   public readonly intervalOptions = [
     {
       text: "Daily",
-      callback_data: Interval.Daily,
+      value: Interval.Daily,
     },
     {
       text: "Every Workday",
-      callback_data: Interval.EveryWorkday,
+      value: Interval.EveryWorkday,
     },
     {
       text: "Weekly",
-      callback_data: Interval.Weekly,
+      value: Interval.Weekly,
     },
   ];
 
   public render(interval: Interval) {
     const intervalOption = this.intervalOptions.find(
-      (option) => option.callback_data === interval
+      (option) => option.value === interval
     );
     return intervalOption?.text ?? "";
+  }
+
+  public parse(input: string | undefined) {
+    const text = (input ?? "").trim();
+
+    const intervalOption = this.intervalOptions.find(
+      (option) => option.text === text
+    );
+
+    return intervalOption?.value;
   }
 }

@@ -13,8 +13,6 @@ import { DialogStateTimeMiddleware } from "./middlewares/DialogStateTimeMiddlewa
 import { DialogStateTeamSizeMiddleware } from "./middlewares/DialogStateTeamSizeMiddleware";
 import { SchedulerService } from "./services/SchedulerService";
 import { DialogStateContext } from "./contexts/DialogStateContext";
-import { Interval } from "./models/Interval";
-import { CancelMiddleware } from "./middlewares/CancelMiddleware";
 import { RedisService } from "./services/RedisService";
 
 const NODE_ENV = process.env.NODE_ENV ?? "development";
@@ -30,8 +28,6 @@ export class TelegrafBot {
   public constructor(
     @inject(Types.HelpMiddleware)
     helpMiddleware: HelpMiddleware,
-    @inject(Types.CancelMiddleware)
-    cancelMiddleware: CancelMiddleware,
 
     @inject(Types.NewScheduleMiddleware)
     newScheduleMiddleware: NewScheduleMiddleware,
@@ -63,8 +59,6 @@ export class TelegrafBot {
     this.bot.start(helpMiddleware);
     this.bot.help(helpMiddleware);
 
-    this.bot.command("cancel", cancelMiddleware);
-
     this.bot.command("newschedule", newScheduleMiddleware);
 
     this.bot.command("currentschedule", currentScheduleMiddleware);
@@ -75,14 +69,9 @@ export class TelegrafBot {
       "message",
       dialogStateMiddleware,
       dialogStateMembersMiddleware,
+      dialogStateIntervalMiddleware,
       dialogStateTimeMiddleware,
       dialogStateTeamSizeMiddleware
-    );
-
-    this.bot.action(
-      Object.values(Interval),
-      dialogStateMiddleware,
-      dialogStateIntervalMiddleware
     );
 
     this.init().catch((error) => {

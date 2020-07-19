@@ -36,7 +36,7 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     if (members.length < 0) {
       return ctx.reply(
-        "You have input an empty list of team members. Please try again, or input /cancel for canceling.",
+        "You have input an empty list of team members. Please try again...",
         {
           reply_markup: {
             force_reply: true,
@@ -52,7 +52,9 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     return ctx.reply("Input an interval for duty schedule notifications:", {
       reply_markup: {
-        inline_keyboard: [this.intervalView.intervalOptions],
+        keyboard: [this.intervalView.intervalOptions],
+        resize_keyboard: true,
+        one_time_keyboard: true,
       },
     });
   }
