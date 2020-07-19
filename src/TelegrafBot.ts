@@ -56,7 +56,9 @@ export class TelegrafBot {
     @inject(Types.SchedulerService)
     private schedulerService: SchedulerService
   ) {
-    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
+    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN, {
+      username: "DutyScheduleBot",
+    });
 
     this.bot.start(helpMiddleware);
     this.bot.help(helpMiddleware);
