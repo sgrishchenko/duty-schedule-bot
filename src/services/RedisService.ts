@@ -11,6 +11,7 @@ export class RedisService {
   public getAll: (key: string) => Promise<Record<string, string> | null>;
   public set: (key: string, field: string, value: string) => Promise<number>;
   public delete: (key: string, field: string) => Promise<number>;
+  public isConnected: () => boolean;
 
   public constructor() {
     const client = redis
@@ -28,5 +29,7 @@ export class RedisService {
       client
     );
     this.delete = promisify(client.hdel).bind(client);
+
+    this.isConnected = () => client.connected;
   }
 }

@@ -15,6 +15,7 @@ import { SchedulerService } from "./services/SchedulerService";
 import { DialogStateContext } from "./contexts/DialogStateContext";
 import { Interval } from "./models/Interval";
 import { CancelMiddleware } from "./middlewares/CancelMiddleware";
+import { RedisService } from "./services/RedisService";
 
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 const PORT = Number(process.env.PORT) ?? 3000;
@@ -50,6 +51,8 @@ export class TelegrafBot {
     @inject(Types.DialogStateTeamSizeMiddleware)
     dialogStateTeamSizeMiddleware: DialogStateTeamSizeMiddleware,
 
+    @inject(Types.RedisService)
+    private redisService: RedisService,
     @inject(Types.SchedulerService)
     private schedulerService: SchedulerService
   ) {
@@ -113,9 +116,14 @@ export class TelegrafBot {
   private requestListener: RequestListener = (request, response) => {
     if (request.url === "/") {
       this.bot.telegram.getWebhookInfo().then((info) => {
+        const result = {
+          telegramIsHooked: this.bot.webhookReply,
+          redisIsConnected: this.redisService.isConnected(),
+        };
+
         response.statusCode = 200;
         response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify(info, null, 2));
+        response.end(JSON.stringify(result, null, 2));
       });
     } else {
       this.bot.webhookCallback(`/bot${BOT_TOKEN}`)(request, response);
