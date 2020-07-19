@@ -34,7 +34,12 @@ export class DialogStateIntervalMiddleware extends Middleware<
 
     return ctx.reply(
       "Input times of day when " +
-        "the duty schedule notification should be sent (in 24:00 format):"
+        "the duty schedule notification should be sent (in 24:00 format):",
+      {
+        reply_markup: {
+          force_reply: true,
+        },
+      }
     );
   }
 }

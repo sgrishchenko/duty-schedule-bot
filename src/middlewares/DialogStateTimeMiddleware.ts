@@ -28,13 +28,23 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
 
     if (!Number.isInteger(hours) || hours < 0 || hours > 23) {
       return ctx.reply(
-        "You have input hours in a wrong format. Please try again, or input /cancel for canceling."
+        "You have input hours in a wrong format. Please try again, or input /cancel for canceling.",
+        {
+          reply_markup: {
+            force_reply: true,
+          },
+        }
       );
     }
 
     if (!Number.isInteger(minutes) || minutes < 0 || minutes > 59) {
       return ctx.reply(
-        "You have input minutes in a wrong format. Please try again, or input /cancel for canceling."
+        "You have input minutes in a wrong format. Please try again, or input /cancel for canceling.",
+        {
+          reply_markup: {
+            force_reply: true,
+          },
+        }
       );
     }
 
