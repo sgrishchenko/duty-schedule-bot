@@ -14,12 +14,14 @@
   "license": "MIT",
   "dependencies": {
     "@types/redis": "^2.8.25",
+    "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "inversify": "^5.0.1",
     "moment": "^2.27.0",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
-    "telegraf": "^3.38.0"
+    "telegraf": "^3.38.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "prettier": "^2.0.5",

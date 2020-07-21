@@ -1,6 +1,8 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { promisify } from "util";
 import redis from "redis";
+import { Logger } from "winston";
+import { Types } from "../types";
 
 const REDIS_URL = process.env.REDIS_URL ?? "";
 const REDIS_PASS = process.env.REDIS_PASS ?? "";
@@ -13,14 +15,15 @@ export class RedisService {
   public delete: (key: string, field: string) => Promise<number>;
   public isConnected: () => boolean;
 
-  public constructor() {
+  public constructor(@inject(Types.Logger) logger: Logger) {
     const client = redis
       .createClient({
         url: REDIS_URL,
         auth_pass: REDIS_PASS,
+        connect_timeout: 10000,
       })
       .on("error", (error) => {
-        console.error(error);
+        logger.error(error);
       });
 
     this.get = promisify(client.hget).bind(client);

@@ -14,6 +14,7 @@ import { DialogStateTeamSizeMiddleware } from "./middlewares/DialogStateTeamSize
 import { SchedulerService } from "./services/SchedulerService";
 import { DialogStateContext } from "./contexts/DialogStateContext";
 import { RedisService } from "./services/RedisService";
+import { Logger } from "winston";
 
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 const PORT = Number(process.env.PORT) ?? 3000;
@@ -26,6 +27,9 @@ export class TelegrafBot {
   private bot: Telegraf<DialogStateContext>;
 
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
+
     @inject(Types.HelpMiddleware)
     helpMiddleware: HelpMiddleware,
 
@@ -75,33 +79,27 @@ export class TelegrafBot {
     );
 
     this.init().catch((error) => {
-      console.log(error);
+      this.logger.error(error);
     });
   }
 
   private async init() {
     if (NODE_ENV === "production") {
-      console.log("Running the bot in webhook mode...");
+      this.logger.info("Running the bot in webhook mode...");
 
       await this.bot.telegram.setWebhook(`${BOT_URL}/bot${BOT_TOKEN}`);
 
       const server = createServer(this.requestListener);
       await new Promise((resolve) => server.listen(PORT, resolve));
     } else {
-      console.log("Running the bot in long-polling mode...");
+      this.logger.info("Running the bot in long-polling mode...");
 
       await this.bot.launch();
     }
 
-    await this.schedulerService.init((chatId, text) => {
-      this.bot.telegram
-        .sendMessage(chatId, text, { parse_mode: "MarkdownV2" })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
+    await this.schedulerService.init(this.sendMessage);
 
-    console.log("Duty Schedule Bot is started!");
+    this.logger.info("Duty Schedule Bot is started!");
   }
 
   private requestListener: RequestListener = (request, response) => {
@@ -120,4 +118,10 @@ export class TelegrafBot {
       this.bot.webhookCallback(`/bot${BOT_TOKEN}`)(request, response);
     }
   };
+
+  private sendMessage = async (chatId: number, text: string) => {
+    await this.bot.telegram.sendMessage(chatId, text, {
+      parse_mode: "MarkdownV2",
+    });
+  }
 }

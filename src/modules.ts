@@ -17,6 +17,36 @@ import { SchedulerService } from "./services/SchedulerService";
 import { IntervalView } from "./views/IntervalView";
 import { DutyScheduleView } from "./views/DutyScheduleView";
 import { NotificationView } from "./views/NotificationView";
+import { createLogger, transports, format, Logger } from "winston";
+import { extractServiceName } from "./utils/extractServiceName";
+import chalk from "chalk";
+
+export const logging = new ContainerModule((bind) => {
+  const logger = createLogger({
+    level: "info",
+    format: format.combine(
+      format.timestamp(),
+      format.colorize(),
+      format.printf((info) => {
+        const { level, message } = info;
+        const timestamp = chalk.green(info.timestamp);
+        const service = chalk.cyan(`${info.service}`);
+        const stack = info.stack ? `\n${info.stack}` : "";
+
+        return `${timestamp} \t[${service}] \t${level}: \t${message}${stack}`;
+      })
+    ),
+    transports: [new transports.Console()],
+  });
+
+  bind<Logger>(Types.Logger)
+    .toDynamicValue((context) => {
+      const serviceName = extractServiceName(context);
+
+      return logger.child({ service: serviceName });
+    })
+    .inTransientScope();
+});
 
 export const storages = new ContainerModule((bind) => {
   bind<RedisService>(Types.RedisService).to(RedisService);

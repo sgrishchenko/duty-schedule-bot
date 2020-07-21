@@ -4,20 +4,24 @@ import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
 import { DutySchedule } from "../models/DutySchedule";
 import { Scheduler } from "./Scheduler";
 import { NotificationView } from "../views/NotificationView";
+import { Logger } from "winston";
 
 @injectable()
 export class SchedulerService {
   private schedulers: Partial<Record<number, Scheduler>> = {};
-  private sendMessage?: (chatId: number, text: string) => void;
+  private sendMessage: (chatId: number, text: string) => Promise<void> = () =>
+    Promise.resolve();
 
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DutyScheduleStorage)
     private dutyScheduleStorage: DutyScheduleStorage,
     @inject(Types.NotificationView)
     private notificationView: NotificationView
   ) {}
 
-  public async init(sendMessage: (chatId: number, text: string) => void) {
+  public async init(sendMessage: SchedulerService["sendMessage"]) {
     this.schedulers = {};
     this.sendMessage = sendMessage;
 
@@ -36,13 +40,14 @@ export class SchedulerService {
       chatId,
       dutySchedule,
       (team: string[], pointer: number) => {
-        this.sendMessage?.(chatId, this.notificationView.render(team));
-
-        dutySchedule.pointer = pointer;
-
-        this.dutyScheduleStorage.set(chatId, dutySchedule).catch((error) => {
-          console.log(error);
-        });
+        this.sendMessage(chatId, this.notificationView.render(team))
+          .then(() => {
+            dutySchedule.pointer = pointer;
+            return this.dutyScheduleStorage.set(chatId, dutySchedule);
+          })
+          .catch((error) => {
+            this.logger.error(error);
+          });
       }
     );
   }
