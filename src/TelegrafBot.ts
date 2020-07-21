@@ -123,5 +123,5 @@ export class TelegrafBot {
     await this.bot.telegram.sendMessage(chatId, text, {
       parse_mode: "MarkdownV2",
     });
-  }
+  };
 }
