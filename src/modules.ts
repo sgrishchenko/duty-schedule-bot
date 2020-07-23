@@ -20,6 +20,7 @@ import { NotificationView } from "./views/NotificationView";
 import { createLogger, transports, format, Logger } from "winston";
 import { extractServiceName } from "./utils/extractServiceName";
 import chalk from "chalk";
+import colors from "colors/safe";
 
 export const logging = new ContainerModule((bind) => {
   const logger = createLogger({
@@ -29,9 +30,11 @@ export const logging = new ContainerModule((bind) => {
       format.colorize(),
       format.printf((info) => {
         const { level, message } = info;
-        const timestamp = chalk.green(info.timestamp);
-        const service = chalk.cyan(`${info.service}`);
+        const timestamp = colors.green(info.timestamp);
+        const service = colors.cyan(`${info.service}`);
         const stack = info.stack ? `\n${info.stack}` : "";
+
+        console.log({ timestamp, service, level });
 
         return `${timestamp} \t[${service}] \t${level}: \t${message}${stack}`;
       })
