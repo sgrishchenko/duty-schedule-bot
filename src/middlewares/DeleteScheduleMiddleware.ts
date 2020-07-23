@@ -4,10 +4,13 @@ import { Middleware } from "./Middleware";
 import { TelegrafContext } from "telegraf/typings/context";
 import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
 import { SchedulerService } from "../services/SchedulerService";
+import { Logger } from "winston";
 
 @injectable()
 export class DeleteScheduleMiddleware extends Middleware<TelegrafContext> {
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DutyScheduleStorage)
     private dutyScheduleStorage: DutyScheduleStorage,
 
@@ -21,8 +24,12 @@ export class DeleteScheduleMiddleware extends Middleware<TelegrafContext> {
     const { chat } = ctx;
     if (!chat) return;
 
-    await this.dutyScheduleStorage.delete(chat.id);
-    this.schedulerService.destroyScheduler(chat.id);
+    const chatId = chat.id;
+
+    await this.dutyScheduleStorage.delete(chatId);
+    this.schedulerService.destroyScheduler(chatId);
+
+    this.logger.info("Current Duty Schedule was deleted.", { chatId });
 
     return ctx.reply(
       "The current duty schedule has been deleted. " +

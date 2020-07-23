@@ -16,7 +16,7 @@ export class Scheduler {
     const { hours, minutes } = dutySchedule.time;
 
     const now = moment().utc();
-    const start = moment().utc().hours(hours).minutes(minutes);
+    const start = moment().utc().hours(hours).minutes(minutes).seconds(0);
 
     if (start.isAfter(now)) {
       start.subtract(1, "day");

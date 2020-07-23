@@ -32,8 +32,9 @@ export const logging = new ContainerModule((bind) => {
         const timestamp = colors.green(info.timestamp);
         const service = colors.cyan(`${info.service}`);
         const stack = info.stack ? `\n${info.stack}` : "";
+        const chat = info.chatId ? colors.blue(`chat: ${info.chatId} => `) : "";
 
-        return `${timestamp} [${service}] ${level}: ${message}${stack}`;
+        return `${timestamp} [${service}] ${level}: ${chat}${message}${stack}`;
       })
     ),
     transports: [new transports.Console()],

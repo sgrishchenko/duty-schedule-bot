@@ -6,12 +6,15 @@ import { DialogStateStorage } from "../storages/DialogStateStorage";
 import { DutyScheduleDraftStorage } from "../storages/DutyScheduleDraftStorage";
 import { DialogState } from "../models/DialogState";
 import { IntervalView } from "../views/IntervalView";
+import { Logger } from "winston";
 
 @injectable()
 export class DialogStateIntervalMiddleware extends Middleware<
   DialogStateContext
 > {
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
     @inject(Types.DutyScheduleDraftStorage)
@@ -27,7 +30,9 @@ export class DialogStateIntervalMiddleware extends Middleware<
       return next();
     }
 
-    const draft = await this.dutyScheduleDraftStorage.get(ctx.chat.id);
+    const chatId = ctx.chat.id;
+
+    const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
     const interval = this.intervalView.parse(ctx.message?.text);
 
@@ -43,8 +48,10 @@ export class DialogStateIntervalMiddleware extends Middleware<
 
     draft.interval = interval;
 
-    await this.dutyScheduleDraftStorage.set(ctx.chat.id, draft);
-    await this.dialogStateStorage.set(ctx.chat.id, DialogState.Time);
+    await this.dutyScheduleDraftStorage.set(chatId, draft);
+    await this.dialogStateStorage.set(chatId, DialogState.Time);
+
+    this.logger.info("Interval was set in Duty Schedule Draft.", { chatId });
 
     return ctx.reply(
       "Input times of day when " +

@@ -4,10 +4,13 @@ import { Middleware } from "./Middleware";
 import { TelegrafContext } from "telegraf/typings/context";
 import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
 import { DutyScheduleView } from "../views/DutyScheduleView";
+import { Logger } from "winston";
 
 @injectable()
 export class CurrentScheduleMiddleware extends Middleware<TelegrafContext> {
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DutyScheduleStorage)
     private dutyScheduleStorage: DutyScheduleStorage,
     @inject(Types.DutyScheduleView)
@@ -20,7 +23,11 @@ export class CurrentScheduleMiddleware extends Middleware<TelegrafContext> {
     const { chat } = ctx;
     if (!chat) return;
 
-    const dutySchedule = await this.dutyScheduleStorage.get(chat.id);
+    const chatId = chat.id;
+
+    const dutySchedule = await this.dutyScheduleStorage.get(chatId);
+
+    this.logger.info("Current Duty Schedule was requested.", { chatId });
 
     if (!dutySchedule) {
       return ctx.reply(

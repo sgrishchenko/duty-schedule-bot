@@ -78,8 +78,12 @@ export class TelegrafBot {
       dialogStateTeamSizeMiddleware
     );
 
-    this.init().catch((error) => {
+    this.bot.catch((error: unknown) => {
       this.logger.error(error);
+    });
+
+    this.init().then(() => {
+      this.logger.info("Duty Schedule Bot is started!");
     });
   }
 
@@ -98,8 +102,6 @@ export class TelegrafBot {
     }
 
     await this.schedulerService.init(this.sendMessage);
-
-    this.logger.info("Duty Schedule Bot is started!");
   }
 
   private requestListener: RequestListener = (request, response) => {

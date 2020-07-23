@@ -45,11 +45,16 @@ export class SchedulerService {
             dutySchedule.pointer = pointer;
             return this.dutyScheduleStorage.set(chatId, dutySchedule);
           })
-          .catch((error) => {
-            this.logger.error(error);
+          .then(() => {
+            return this.logger.info(
+              "Duty Schedule was updated, notification was sent.",
+              { chatId }
+            );
           });
       }
     );
+
+    this.logger.info("Scheduler was created.", { chatId });
   }
 
   public destroyScheduler(chatId: number) {
@@ -59,6 +64,8 @@ export class SchedulerService {
       scheduler.destroy();
       delete this.schedulers[chatId];
     }
+
+    this.logger.info("Scheduler was destroyed.", { chatId });
   }
 
   public updateScheduler(chatId: number, dutySchedule: DutySchedule) {

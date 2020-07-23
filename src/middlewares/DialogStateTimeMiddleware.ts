@@ -5,10 +5,13 @@ import { DialogStateContext } from "../contexts/DialogStateContext";
 import { DialogStateStorage } from "../storages/DialogStateStorage";
 import { DutyScheduleDraftStorage } from "../storages/DutyScheduleDraftStorage";
 import { DialogState } from "../models/DialogState";
+import { Logger } from "winston";
 
 @injectable()
 export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
     @inject(Types.DutyScheduleDraftStorage)
@@ -22,7 +25,9 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
       return next();
     }
 
-    const draft = await this.dutyScheduleDraftStorage.get(ctx.chat.id);
+    const chatId = ctx.chat.id;
+
+    const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
     const [hours, minutes] = (ctx.message?.text ?? "").split(":").map(Number);
 
@@ -53,8 +58,12 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
       minutes,
     };
 
-    await this.dutyScheduleDraftStorage.set(ctx.chat.id, draft);
-    await this.dialogStateStorage.set(ctx.chat.id, DialogState.TeamSize);
+    await this.dutyScheduleDraftStorage.set(chatId, draft);
+    await this.dialogStateStorage.set(chatId, DialogState.TeamSize);
+
+    this.logger.info("Time was set in Duty Schedule Draft.", {
+      chatId,
+    });
 
     return ctx.reply("How many people should be on duty at a time:", {
       reply_markup: {

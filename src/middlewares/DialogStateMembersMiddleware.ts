@@ -6,12 +6,15 @@ import { DialogStateStorage } from "../storages/DialogStateStorage";
 import { DutyScheduleDraftStorage } from "../storages/DutyScheduleDraftStorage";
 import { DialogState } from "../models/DialogState";
 import { IntervalView } from "../views/IntervalView";
+import { Logger } from "winston";
 
 @injectable()
 export class DialogStateMembersMiddleware extends Middleware<
   DialogStateContext
 > {
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
     @inject(Types.DutyScheduleDraftStorage)
@@ -27,7 +30,9 @@ export class DialogStateMembersMiddleware extends Middleware<
       return next();
     }
 
-    const draft = await this.dutyScheduleDraftStorage.get(ctx.chat.id);
+    const chatId = ctx.chat.id;
+
+    const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
     const members = (ctx.message?.text ?? "")
       .split("\n")
@@ -47,8 +52,12 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     draft.members = members;
 
-    await this.dutyScheduleDraftStorage.set(ctx.chat.id, draft);
-    await this.dialogStateStorage.set(ctx.chat.id, DialogState.Interval);
+    await this.dutyScheduleDraftStorage.set(chatId, draft);
+    await this.dialogStateStorage.set(chatId, DialogState.Interval);
+
+    this.logger.info("List of Members was set in Duty Schedule Draft.", {
+      chatId,
+    });
 
     return ctx.reply("Input an interval for duty schedule notifications:", {
       reply_markup: {

@@ -9,12 +9,15 @@ import { SchedulerService } from "../services/SchedulerService";
 import { DialogState } from "../models/DialogState";
 import { DutySchedule } from "../models/DutySchedule";
 import { DutyScheduleView } from "../views/DutyScheduleView";
+import { Logger } from "winston";
 
 @injectable()
 export class DialogStateTeamSizeMiddleware extends Middleware<
   DialogStateContext
 > {
   public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
     @inject(Types.DutyScheduleDraftStorage)
@@ -35,7 +38,9 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
       return next();
     }
 
-    const draft = await this.dutyScheduleDraftStorage.get(ctx.chat.id);
+    const chatId = ctx.chat.id;
+
+    const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
     const teamSize = Number(ctx.message?.text ?? "");
 
@@ -48,8 +53,8 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
     const { members, interval, time } = draft;
 
     if (!members || !interval || !time) {
-      await this.dutyScheduleDraftStorage.delete(ctx.chat.id);
-      await this.dialogStateStorage.set(ctx.chat.id, DialogState.Members);
+      await this.dutyScheduleDraftStorage.delete(chatId);
+      await this.dialogStateStorage.set(chatId, DialogState.Members);
 
       return ctx.reply(
         "Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n" +
@@ -62,8 +67,8 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
       );
     }
 
-    await this.dutyScheduleDraftStorage.delete(ctx.chat.id);
-    await this.dialogStateStorage.delete(ctx.chat.id);
+    await this.dutyScheduleDraftStorage.delete(chatId);
+    await this.dialogStateStorage.delete(chatId);
 
     const dutySchedule: DutySchedule = {
       members,
@@ -73,8 +78,12 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
       pointer: -1, // this is initial state before the first duty
     };
 
-    await this.dutyScheduleStorage.set(ctx.chat.id, dutySchedule);
-    this.schedulerService.updateScheduler(ctx.chat.id, dutySchedule);
+    await this.dutyScheduleStorage.set(chatId, dutySchedule);
+    this.schedulerService.updateScheduler(chatId, dutySchedule);
+
+    this.logger.info("Duty Schedule was created.", {
+      chatId,
+    });
 
     return ctx.replyWithMarkdown(this.dutyScheduleView.render(dutySchedule));
   }
