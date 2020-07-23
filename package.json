@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/redis": "^2.8.25",
-    "chalk": "^4.1.0",
+    "colors": "^1.4.0",
     "dotenv": "^8.2.0",
     "inversify": "^5.0.1",
     "moment": "^2.27.0",
