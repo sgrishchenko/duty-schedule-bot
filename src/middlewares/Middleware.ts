@@ -1,5 +1,5 @@
 import { TelegrafContext } from "telegraf/typings/context";
-import { MiddlewareObj, MiddlewareFn } from "telegraf/typings/composer";
+import { MiddlewareFn, MiddlewareObj } from "telegraf/typings/composer";
 import { injectable } from "inversify";
 
 @injectable()

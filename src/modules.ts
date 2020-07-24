@@ -1,4 +1,4 @@
-import { ContainerModule, interfaces } from "inversify";
+import { ContainerModule } from "inversify";
 import { Types } from "./types";
 import { RedisService } from "./services/RedisService";
 import { DialogStateStorage } from "./storages/DialogStateStorage";
@@ -19,7 +19,7 @@ import { Scheduler } from "./services/Scheduler";
 import { IntervalView } from "./views/IntervalView";
 import { DutyScheduleView } from "./views/DutyScheduleView";
 import { NotificationView } from "./views/NotificationView";
-import { createLogger, transports, format, Logger } from "winston";
+import { createLogger, format, Logger, transports } from "winston";
 import { extractServiceName } from "./utils/extractServiceName";
 import colors from "colors/safe";
 

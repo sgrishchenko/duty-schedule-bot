@@ -1,7 +1,7 @@
 import "dotenv/config";
 import "reflect-metadata";
 import { Container } from "inversify";
-import { storages, views, middlewares, scheduling, logging } from "./modules";
+import { logging, middlewares, scheduling, storages, views } from "./modules";
 import { Types } from "./types";
 import { TelegrafBot } from "./TelegrafBot";
 
