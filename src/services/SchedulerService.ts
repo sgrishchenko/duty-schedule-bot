@@ -5,6 +5,7 @@ import { DutySchedule } from "../models/DutySchedule";
 import { Scheduler } from "./Scheduler";
 import { NotificationView } from "../views/NotificationView";
 import { Logger } from "winston";
+import { SchedulerFactory } from "./SchedulerFactory";
 
 @injectable()
 export class SchedulerService {
@@ -17,6 +18,8 @@ export class SchedulerService {
     private logger: Logger,
     @inject(Types.DutyScheduleStorage)
     private dutyScheduleStorage: DutyScheduleStorage,
+    @inject(Types.SchedulerFactory)
+    private schedulerFactory: SchedulerFactory,
     @inject(Types.NotificationView)
     private notificationView: NotificationView
   ) {}
@@ -36,7 +39,7 @@ export class SchedulerService {
   }
 
   private createScheduler(chatId: number, dutySchedule: DutySchedule) {
-    this.schedulers[chatId] = new Scheduler(
+    this.schedulers[chatId] = this.schedulerFactory(
       chatId,
       dutySchedule,
       (team: string[], pointer: number) => {

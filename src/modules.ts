@@ -1,4 +1,4 @@
-import { ContainerModule } from "inversify";
+import { ContainerModule, interfaces } from "inversify";
 import { Types } from "./types";
 import { RedisService } from "./services/RedisService";
 import { DialogStateStorage } from "./storages/DialogStateStorage";
@@ -14,6 +14,8 @@ import { DialogStateIntervalMiddleware } from "./middlewares/DialogStateInterval
 import { DialogStateTeamSizeMiddleware } from "./middlewares/DialogStateTeamSizeMiddleware";
 import { DialogStateTimeMiddleware } from "./middlewares/DialogStateTimeMiddleware";
 import { SchedulerService } from "./services/SchedulerService";
+import { SchedulerFactory } from "./services/SchedulerFactory";
+import { Scheduler } from "./services/Scheduler";
 import { IntervalView } from "./views/IntervalView";
 import { DutyScheduleView } from "./views/DutyScheduleView";
 import { NotificationView } from "./views/NotificationView";
@@ -97,4 +99,7 @@ export const middlewares = new ContainerModule((bind) => {
 
 export const scheduling = new ContainerModule((bind) => {
   bind<SchedulerService>(Types.SchedulerService).to(SchedulerService);
+  bind<SchedulerFactory>(Types.SchedulerFactory).toFactory<Scheduler>(
+    (): SchedulerFactory => (...args) => new Scheduler(...args)
+  );
 });

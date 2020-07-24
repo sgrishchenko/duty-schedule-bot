@@ -8,6 +8,7 @@ export const Types = {
   DutyScheduleStorage: Symbol.for("DutyScheduleStorage"),
 
   SchedulerService: Symbol.for("SchedulerService"),
+  SchedulerFactory: Symbol.for("SchedulerFactory"),
 
   IntervalView: Symbol.for("IntervalView"),
   DutyScheduleView: Symbol.for("DutyScheduleView"),
