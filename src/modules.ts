@@ -1,27 +1,27 @@
-import { ContainerModule } from "inversify";
-import { Types } from "./types";
-import { RedisService } from "./services/RedisService";
-import { DialogStateStorage } from "./storages/DialogStateStorage";
-import { DutyScheduleDraftStorage } from "./storages/DutyScheduleDraftStorage";
-import { DutyScheduleStorage } from "./storages/DutyScheduleStorage";
-import { HelpMiddleware } from "./middlewares/HelpMiddleware";
-import { NewScheduleMiddleware } from "./middlewares/NewScheduleMiddleware";
-import { CurrentScheduleMiddleware } from "./middlewares/CurrentScheduleMiddleware";
-import { DeleteScheduleMiddleware } from "./middlewares/DeleteScheduleMiddleware";
-import { DialogStateMiddleware } from "./middlewares/DialogStateMiddleware";
-import { DialogStateMembersMiddleware } from "./middlewares/DialogStateMembersMiddleware";
-import { DialogStateIntervalMiddleware } from "./middlewares/DialogStateIntervalMiddleware";
-import { DialogStateTeamSizeMiddleware } from "./middlewares/DialogStateTeamSizeMiddleware";
-import { DialogStateTimeMiddleware } from "./middlewares/DialogStateTimeMiddleware";
-import { SchedulerService } from "./services/SchedulerService";
-import { SchedulerFactory } from "./services/SchedulerFactory";
-import { Scheduler } from "./services/Scheduler";
-import { IntervalView } from "./views/IntervalView";
-import { DutyScheduleView } from "./views/DutyScheduleView";
-import { NotificationView } from "./views/NotificationView";
-import { createLogger, format, Logger, transports } from "winston";
-import { extractServiceName } from "./utils/extractServiceName";
 import colors from "colors/safe";
+import { ContainerModule } from "inversify";
+import { createLogger, format, Logger, transports } from "winston";
+import { CurrentScheduleMiddleware } from "./middleware/CurrentScheduleMiddleware";
+import { DeleteScheduleMiddleware } from "./middleware/DeleteScheduleMiddleware";
+import { DialogStateIntervalMiddleware } from "./middleware/DialogStateIntervalMiddleware";
+import { DialogStateMembersMiddleware } from "./middleware/DialogStateMembersMiddleware";
+import { DialogStateMiddleware } from "./middleware/DialogStateMiddleware";
+import { DialogStateTeamSizeMiddleware } from "./middleware/DialogStateTeamSizeMiddleware";
+import { DialogStateTimeMiddleware } from "./middleware/DialogStateTimeMiddleware";
+import { HelpMiddleware } from "./middleware/HelpMiddleware";
+import { NewScheduleMiddleware } from "./middleware/NewScheduleMiddleware";
+import { RedisService } from "./service/RedisService";
+import { Scheduler } from "./service/Scheduler";
+import { SchedulerFactory } from "./service/SchedulerFactory";
+import { SchedulerService } from "./service/SchedulerService";
+import { DialogStateStorage } from "./storage/DialogStateStorage";
+import { DutyScheduleDraftStorage } from "./storage/DutyScheduleDraftStorage";
+import { DutyScheduleStorage } from "./storage/DutyScheduleStorage";
+import { Types } from "./types";
+import { extractServiceName } from "./util/extractServiceName";
+import { DutyScheduleView } from "./view/DutyScheduleView";
+import { IntervalView } from "./view/IntervalView";
+import { NotificationView } from "./view/NotificationView";
 
 export const logging = new ContainerModule((bind) => {
   const logger = createLogger({
@@ -51,7 +51,7 @@ export const logging = new ContainerModule((bind) => {
     .inTransientScope();
 });
 
-export const storages = new ContainerModule((bind) => {
+export const storage = new ContainerModule((bind) => {
   bind<RedisService>(Types.RedisService).to(RedisService);
 
   bind<DialogStateStorage>(Types.DialogStateStorage).to(DialogStateStorage);
@@ -61,13 +61,13 @@ export const storages = new ContainerModule((bind) => {
   bind<DutyScheduleStorage>(Types.DutyScheduleStorage).to(DutyScheduleStorage);
 });
 
-export const views = new ContainerModule((bind) => {
+export const view = new ContainerModule((bind) => {
   bind<IntervalView>(Types.IntervalView).to(IntervalView);
   bind<DutyScheduleView>(Types.DutyScheduleView).to(DutyScheduleView);
   bind<NotificationView>(Types.NotificationView).to(NotificationView);
 });
 
-export const middlewares = new ContainerModule((bind) => {
+export const middleware = new ContainerModule((bind) => {
   bind<HelpMiddleware>(Types.HelpMiddleware).to(HelpMiddleware);
 
   bind<NewScheduleMiddleware>(Types.NewScheduleMiddleware).to(

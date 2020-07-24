@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
+import { DutyScheduleDraft } from "../model/DutySchedule";
+import { RedisService } from "../service/RedisService";
 import { Types } from "../types";
 import { Storage } from "./Storage";
 import { StorageKey } from "./StorageKey";
-import { RedisService } from "../services/RedisService";
-import { DutyScheduleDraft } from "../models/DutySchedule";
 
 @injectable()
 export class DutyScheduleDraftStorage extends Storage<DutyScheduleDraft> {

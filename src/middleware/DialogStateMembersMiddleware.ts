@@ -1,12 +1,12 @@
 import { inject, injectable } from "inversify";
-import { Types } from "../types";
-import { Middleware } from "./Middleware";
-import { DialogStateContext } from "../contexts/DialogStateContext";
-import { DialogStateStorage } from "../storages/DialogStateStorage";
-import { DutyScheduleDraftStorage } from "../storages/DutyScheduleDraftStorage";
-import { DialogState } from "../models/DialogState";
-import { IntervalView } from "../views/IntervalView";
 import { Logger } from "winston";
+import { DialogStateContext } from "../context/DialogStateContext";
+import { DialogState } from "../model/DialogState";
+import { DialogStateStorage } from "../storage/DialogStateStorage";
+import { DutyScheduleDraftStorage } from "../storage/DutyScheduleDraftStorage";
+import { Types } from "../types";
+import { IntervalView } from "../view/IntervalView";
+import { Middleware } from "./Middleware";
 
 @injectable()
 export class DialogStateMembersMiddleware extends Middleware<

@@ -1,15 +1,15 @@
 import "dotenv/config";
-import "reflect-metadata";
 import { Container } from "inversify";
-import { logging, middlewares, scheduling, storages, views } from "./modules";
-import { Types } from "./types";
+import "reflect-metadata";
+import { logging, middleware, scheduling, storage, view } from "./modules";
 import { TelegrafBot } from "./TelegrafBot";
+import { Types } from "./types";
 
 export const container = new Container({
   defaultScope: "Singleton",
 });
 
-container.load(logging, storages, views, middlewares, scheduling);
+container.load(logging, storage, view, middleware, scheduling);
 
 container.bind<TelegrafBot>(Types.TelegrafBot).to(TelegrafBot);
 

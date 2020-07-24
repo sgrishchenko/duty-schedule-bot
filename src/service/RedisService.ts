@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import { promisify } from "util";
 import redis from "redis";
+import { promisify } from "util";
 import { Logger } from "winston";
 import { Types } from "../types";
 

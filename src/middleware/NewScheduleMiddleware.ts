@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
+import { TelegrafContext } from "telegraf/typings/context";
+import { Logger } from "winston";
+import { DialogState } from "../model/DialogState";
+import { DialogStateStorage } from "../storage/DialogStateStorage";
 import { Types } from "../types";
 import { Middleware } from "./Middleware";
-import { TelegrafContext } from "telegraf/typings/context";
-import { DialogStateStorage } from "../storages/DialogStateStorage";
-import { DialogState } from "../models/DialogState";
-import { Logger } from "winston";
 
 @injectable()
 export class NewScheduleMiddleware extends Middleware<TelegrafContext> {

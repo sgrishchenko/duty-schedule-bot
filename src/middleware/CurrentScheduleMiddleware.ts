@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
-import { Types } from "../types";
-import { Middleware } from "./Middleware";
 import { TelegrafContext } from "telegraf/typings/context";
-import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
-import { DutyScheduleView } from "../views/DutyScheduleView";
 import { Logger } from "winston";
+import { DutyScheduleStorage } from "../storage/DutyScheduleStorage";
+import { Types } from "../types";
+import { DutyScheduleView } from "../view/DutyScheduleView";
+import { Middleware } from "./Middleware";
 
 @injectable()
 export class CurrentScheduleMiddleware extends Middleware<TelegrafContext> {

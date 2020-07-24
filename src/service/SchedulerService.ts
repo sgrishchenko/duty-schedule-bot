@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
-import { Types } from "../types";
-import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
-import { DutySchedule } from "../models/DutySchedule";
-import { Scheduler } from "./Scheduler";
-import { NotificationView } from "../views/NotificationView";
 import { Logger } from "winston";
+import { DutySchedule } from "../model/DutySchedule";
+import { DutyScheduleStorage } from "../storage/DutyScheduleStorage";
+import { Types } from "../types";
+import { NotificationView } from "../view/NotificationView";
+import { Scheduler } from "./Scheduler";
 import { SchedulerFactory } from "./SchedulerFactory";
 
 @injectable()

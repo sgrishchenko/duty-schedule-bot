@@ -1,6 +1,6 @@
-import { StorageKey } from "./StorageKey";
-import { RedisService } from "../services/RedisService";
 import { injectable, unmanaged } from "inversify";
+import { RedisService } from "../service/RedisService";
+import { StorageKey } from "./StorageKey";
 
 @injectable()
 export abstract class Storage<Type> {

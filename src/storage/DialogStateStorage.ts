@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
+import { DialogState } from "../model/DialogState";
+import { RedisService } from "../service/RedisService";
 import { Types } from "../types";
 import { Storage } from "./Storage";
 import { StorageKey } from "./StorageKey";
-import { RedisService } from "../services/RedisService";
-import { DialogState } from "../models/DialogState";
 
 @injectable()
 export class DialogStateStorage extends Storage<DialogState> {

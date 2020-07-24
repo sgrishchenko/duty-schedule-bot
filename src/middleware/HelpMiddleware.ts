@@ -1,8 +1,8 @@
-import { Middleware } from "./Middleware";
-import { TelegrafContext } from "telegraf/typings/context";
 import { inject, injectable } from "inversify";
-import { Types } from "../types";
+import { TelegrafContext } from "telegraf/typings/context";
 import { Logger } from "winston";
+import { Types } from "../types";
+import { Middleware } from "./Middleware";
 
 @injectable()
 export class HelpMiddleware extends Middleware<TelegrafContext> {

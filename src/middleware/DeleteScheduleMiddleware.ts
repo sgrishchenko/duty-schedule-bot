@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
+import { TelegrafContext } from "telegraf/typings/context";
+import { Logger } from "winston";
+import { SchedulerService } from "../service/SchedulerService";
+import { DutyScheduleStorage } from "../storage/DutyScheduleStorage";
 import { Types } from "../types";
 import { Middleware } from "./Middleware";
-import { TelegrafContext } from "telegraf/typings/context";
-import { DutyScheduleStorage } from "../storages/DutyScheduleStorage";
-import { SchedulerService } from "../services/SchedulerService";
-import { Logger } from "winston";
 
 @injectable()
 export class DeleteScheduleMiddleware extends Middleware<TelegrafContext> {

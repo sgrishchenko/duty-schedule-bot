@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
+import { TelegrafContext } from "telegraf/typings/context";
+import { DialogStateContext } from "../context/DialogStateContext";
+import { DialogStateStorage } from "../storage/DialogStateStorage";
 import { Types } from "../types";
 import { Middleware } from "./Middleware";
-import { TelegrafContext } from "telegraf/typings/context";
-import { DialogStateContext } from "../contexts/DialogStateContext";
-import { DialogStateStorage } from "../storages/DialogStateStorage";
 
 @injectable()
 export class DialogStateMiddleware extends Middleware<TelegrafContext> {

@@ -1,6 +1,6 @@
 import moment, { now } from "moment";
-import { DutySchedule } from "../models/DutySchedule";
-import { Interval } from "../models/Interval";
+import { DutySchedule } from "../model/DutySchedule";
+import { Interval } from "../model/Interval";
 
 export class Scheduler {
   private handleTimeout?: NodeJS.Timeout;

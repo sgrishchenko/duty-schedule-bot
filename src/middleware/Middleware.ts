@@ -1,6 +1,6 @@
-import { TelegrafContext } from "telegraf/typings/context";
-import { MiddlewareFn, MiddlewareObj } from "telegraf/typings/composer";
 import { injectable } from "inversify";
+import { MiddlewareFn, MiddlewareObj } from "telegraf/typings/composer";
+import { TelegrafContext } from "telegraf/typings/context";
 
 @injectable()
 export abstract class Middleware<Context extends TelegrafContext>

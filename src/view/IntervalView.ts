@@ -1,5 +1,5 @@
-import { Interval } from "../models/Interval";
 import { injectable } from "inversify";
+import { Interval } from "../model/Interval";
 
 @injectable()
 export class IntervalView {

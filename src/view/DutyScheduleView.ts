@@ -1,7 +1,7 @@
-import { DutySchedule } from "../models/DutySchedule";
 import { inject, injectable } from "inversify";
-import { IntervalView } from "./IntervalView";
+import { DutySchedule } from "../model/DutySchedule";
 import { Types } from "../types";
+import { IntervalView } from "./IntervalView";
 
 @injectable()
 export class DutyScheduleView {

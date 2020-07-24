@@ -1,5 +1,5 @@
 import { TelegrafContext } from "telegraf/typings/context";
-import { DialogState } from "../models/DialogState";
+import { DialogState } from "../model/DialogState";
 
 export interface DialogStateContext extends TelegrafContext {
   dialogState: DialogState | null;
