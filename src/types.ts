@@ -7,6 +7,7 @@ export const Types = {
   DutyScheduleDraftStorage: Symbol.for("DutyScheduleDraftStorage"),
   DutyScheduleStorage: Symbol.for("DutyScheduleStorage"),
 
+  TeamService: Symbol.for("TeamService"),
   SchedulerService: Symbol.for("SchedulerService"),
   SchedulerFactory: Symbol.for("SchedulerFactory"),
 

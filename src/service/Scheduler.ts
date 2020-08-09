@@ -1,12 +1,15 @@
 import moment, { now } from "moment";
 import { DutySchedule } from "../model/DutySchedule";
 import { Interval } from "../model/Interval";
+import { TeamService } from "./TeamService";
 
 export class Scheduler {
   private handleTimeout?: NodeJS.Timeout;
   private pointer: number;
 
   public constructor(
+    private teamService: TeamService,
+
     private chatId: number,
     private dutySchedule: DutySchedule,
     private handleCallback: (team: string[], pointer: number) => void
@@ -64,22 +67,13 @@ export class Scheduler {
     return date.isoWeekday() === 6 || date.isoWeekday() === 7;
   }
 
-  private getMemberIndex(index: number) {
-    const { members } = this.dutySchedule;
-
-    return (members.length + index) % members.length;
-  }
-
   private handleSchedule() {
-    const { members, teamSize } = this.dutySchedule;
-    const team = [];
+    this.pointer = this.teamService.getMemberIndex(
+      this.dutySchedule,
+      this.pointer + 1
+    );
 
-    this.pointer = this.getMemberIndex(this.pointer + 1);
-
-    for (let i = 0; i < Math.min(teamSize, members.length); i++) {
-      const memberIndex = this.getMemberIndex(this.pointer + i);
-      team.push(members[memberIndex]);
-    }
+    const team = this.teamService.getTeam(this.dutySchedule, this.pointer);
 
     this.handleCallback(team, this.pointer);
   }

@@ -14,6 +14,7 @@ import { RedisService } from "./service/RedisService";
 import { Scheduler } from "./service/Scheduler";
 import { SchedulerFactory } from "./service/SchedulerFactory";
 import { SchedulerService } from "./service/SchedulerService";
+import { TeamService } from "./service/TeamService";
 import { DialogStateStorage } from "./storage/DialogStateStorage";
 import { DutyScheduleDraftStorage } from "./storage/DutyScheduleDraftStorage";
 import { DutyScheduleStorage } from "./storage/DutyScheduleStorage";
@@ -98,8 +99,12 @@ export const middleware = new ContainerModule((bind) => {
 });
 
 export const scheduling = new ContainerModule((bind) => {
+  bind<TeamService>(Types.TeamService).to(TeamService);
   bind<SchedulerService>(Types.SchedulerService).to(SchedulerService);
   bind<SchedulerFactory>(Types.SchedulerFactory).toFactory<Scheduler>(
-    (): SchedulerFactory => (...args) => new Scheduler(...args)
+    (context): SchedulerFactory => {
+      const teamService = context.container.get<TeamService>(Types.TeamService);
+      return (...args) => new Scheduler(teamService, ...args);
+    }
   );
 });
