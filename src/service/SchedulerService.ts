@@ -6,6 +6,7 @@ import { Types } from "../types";
 import { NotificationView } from "../view/NotificationView";
 import { Scheduler } from "./Scheduler";
 import { SchedulerFactory } from "./SchedulerFactory";
+import { TeamService } from "./TeamService";
 
 @injectable()
 export class SchedulerService {
@@ -20,6 +21,8 @@ export class SchedulerService {
     private dutyScheduleStorage: DutyScheduleStorage,
     @inject(Types.SchedulerFactory)
     private schedulerFactory: SchedulerFactory,
+    @inject(Types.TeamService)
+    private teamService: TeamService,
     @inject(Types.NotificationView)
     private notificationView: NotificationView
   ) {}
@@ -39,22 +42,27 @@ export class SchedulerService {
   }
 
   private createScheduler(chatId: number, dutySchedule: DutySchedule) {
+    let currentSchedule = dutySchedule;
+
+    const handleCallback = () => {
+      currentSchedule = this.teamService.movePointer(currentSchedule);
+      const team = this.teamService.getTeam(currentSchedule);
+
+      this.sendMessage(chatId, this.notificationView.render(team))
+        .then(() => {
+          return this.dutyScheduleStorage.set(chatId, currentSchedule);
+        })
+        .then(() => {
+          return this.logger.info(
+            "Duty Schedule was updated, notification was sent.",
+            { chatId }
+          );
+        });
+    };
+
     this.schedulers[chatId] = this.schedulerFactory(
-      chatId,
       dutySchedule,
-      (team: string[], pointer: number) => {
-        this.sendMessage(chatId, this.notificationView.render(team))
-          .then(() => {
-            dutySchedule.pointer = pointer;
-            return this.dutyScheduleStorage.set(chatId, dutySchedule);
-          })
-          .then(() => {
-            return this.logger.info(
-              "Duty Schedule was updated, notification was sent.",
-              { chatId }
-            );
-          });
-      }
+      handleCallback
     );
 
     this.logger.info("Scheduler was created.", { chatId });

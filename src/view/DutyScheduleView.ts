@@ -29,8 +29,8 @@ ${internalView} at ${timeView}
   }
 
   private renderMembers(schedule: DutySchedule) {
-    const { members, pointer } = schedule;
-    const team = this.teamService.getTeam(schedule, pointer);
+    const { members } = schedule;
+    const team = this.teamService.getTeam(schedule);
 
     return members
       .map((member) => {

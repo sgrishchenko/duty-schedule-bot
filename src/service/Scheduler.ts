@@ -1,21 +1,14 @@
 import moment, { now } from "moment";
 import { DutySchedule } from "../model/DutySchedule";
 import { Interval } from "../model/Interval";
-import { TeamService } from "./TeamService";
 
 export class Scheduler {
   private handleTimeout?: NodeJS.Timeout;
-  private pointer: number;
 
   public constructor(
-    private teamService: TeamService,
-
-    private chatId: number,
     private dutySchedule: DutySchedule,
-    private handleCallback: (team: string[], pointer: number) => void
+    private handleCallback: () => void
   ) {
-    this.pointer = dutySchedule.pointer;
-
     const { hours, minutes } = dutySchedule.time;
 
     const now = moment().utc();
@@ -34,7 +27,7 @@ export class Scheduler {
     const delayTime = next.diff(now);
 
     this.handleTimeout = setTimeout(() => {
-      this.handleSchedule();
+      this.handleCallback();
 
       this.planNextHandling();
     }, delayTime);
@@ -65,17 +58,6 @@ export class Scheduler {
   private static isWeekend(timestamp: number) {
     const date = moment(timestamp).utc();
     return date.isoWeekday() === 6 || date.isoWeekday() === 7;
-  }
-
-  private handleSchedule() {
-    this.pointer = this.teamService.getMemberIndex(
-      this.dutySchedule,
-      this.pointer + 1
-    );
-
-    const team = this.teamService.getTeam(this.dutySchedule, this.pointer);
-
-    this.handleCallback(team, this.pointer);
   }
 
   public destroy() {

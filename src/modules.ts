@@ -102,9 +102,6 @@ export const scheduling = new ContainerModule((bind) => {
   bind<TeamService>(Types.TeamService).to(TeamService);
   bind<SchedulerService>(Types.SchedulerService).to(SchedulerService);
   bind<SchedulerFactory>(Types.SchedulerFactory).toFactory<Scheduler>(
-    (context): SchedulerFactory => {
-      const teamService = context.container.get<TeamService>(Types.TeamService);
-      return (...args) => new Scheduler(teamService, ...args);
-    }
+    (): SchedulerFactory => (...args) => new Scheduler(...args)
   );
 });
