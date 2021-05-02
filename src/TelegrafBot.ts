@@ -94,7 +94,7 @@ export class TelegrafBot {
       await this.bot.telegram.setWebhook(`${BOT_URL}/bot${BOT_TOKEN}`);
 
       const server = createServer(this.requestListener);
-      await new Promise((resolve) => server.listen(PORT, resolve));
+      await new Promise<void>((resolve) => server.listen(PORT, resolve));
     } else {
       this.logger.info('Running the bot in long-polling mode...');
 

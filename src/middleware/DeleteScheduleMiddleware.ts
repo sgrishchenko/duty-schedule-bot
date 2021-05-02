@@ -31,8 +31,6 @@ export class DeleteScheduleMiddleware extends Middleware<TelegrafContext> {
 
     this.logger.info('Current Duty Schedule was deleted.', { chatId });
 
-    return ctx.reply(
-      'The current duty schedule has been deleted. Send /newschedule to create a new duty schedule.',
-    );
+    return ctx.reply('The current duty schedule has been deleted. Send /newschedule to create a new duty schedule.');
   }
 }
