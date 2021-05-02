@@ -36,11 +36,19 @@ export class DialogStateTeamSizeMiddleware extends Middleware<DialogStateContext
       return next();
     }
 
+    if (!ctx.message) {
+      return next();
+    }
+
+    if (!('text' in ctx.message)) {
+      return next();
+    }
+
     const chatId = ctx.chat.id;
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const teamSize = Number(ctx.message?.text ?? '');
+    const teamSize = Number(ctx.message.text);
 
     if (!Number.isInteger(teamSize)) {
       return ctx.reply('The team size should be an integer. Please try again, or input /cancel for canceling.');

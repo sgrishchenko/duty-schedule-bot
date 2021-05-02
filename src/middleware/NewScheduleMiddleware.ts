@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { TelegrafContext } from 'telegraf/typings/context';
+import { Context } from 'telegraf';
 import { Logger } from 'winston';
 import { DialogState } from '../model/DialogState';
 import { DialogStateStorage } from '../storage/DialogStateStorage';
@@ -7,7 +7,7 @@ import { Types } from '../types';
 import { Middleware } from './Middleware';
 
 @injectable()
-export class NewScheduleMiddleware extends Middleware<TelegrafContext> {
+export class NewScheduleMiddleware extends Middleware<Context> {
   public constructor(
     @inject(Types.Logger)
     private logger: Logger,
@@ -17,7 +17,7 @@ export class NewScheduleMiddleware extends Middleware<TelegrafContext> {
     super();
   }
 
-  public async handle(ctx: TelegrafContext) {
+  public async handle(ctx: Context) {
     const { chat } = ctx;
     if (!chat) return;
 

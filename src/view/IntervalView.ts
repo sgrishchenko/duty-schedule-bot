@@ -23,8 +23,8 @@ export class IntervalView {
     return intervalOption?.text ?? '';
   }
 
-  public parse(input: string | undefined) {
-    const text = (input ?? '').trim();
+  public parse(input: string) {
+    const text = input.trim();
 
     const intervalOption = this.intervalOptions.find((option) => option.text === text);
 

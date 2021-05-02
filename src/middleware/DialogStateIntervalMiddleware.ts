@@ -28,11 +28,19 @@ export class DialogStateIntervalMiddleware extends Middleware<DialogStateContext
       return next();
     }
 
+    if (!ctx.message) {
+      return next();
+    }
+
+    if (!('text' in ctx.message)) {
+      return next();
+    }
+
     const chatId = ctx.chat.id;
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const interval = this.intervalView.parse(ctx.message?.text);
+    const interval = this.intervalView.parse(ctx.message.text);
 
     if (!interval) {
       return ctx.reply('This interval is unsupported. Please try again...', {

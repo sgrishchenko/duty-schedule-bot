@@ -1,6 +1,6 @@
 import { createServer, RequestListener } from 'http';
 import { inject, injectable } from 'inversify';
-import Telegraf from 'telegraf';
+import { Telegraf } from 'telegraf';
 import { Logger } from 'winston';
 import { DialogStateContext } from './context/DialogStateContext';
 import { CurrentScheduleMiddleware } from './middleware/CurrentScheduleMiddleware';
@@ -56,9 +56,7 @@ export class TelegrafBot {
     @inject(Types.SchedulerService)
     private schedulerService: SchedulerService,
   ) {
-    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN, {
-      username: 'DutyScheduleBot',
-    });
+    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
 
     this.bot.start(helpMiddleware);
     this.bot.help(helpMiddleware);
@@ -108,7 +106,7 @@ export class TelegrafBot {
     if (request.url === '/') {
       this.bot.telegram.getWebhookInfo().then((webhookInfo) => {
         const result = {
-          telegramIsHooked: webhookInfo.url.includes(BOT_URL),
+          telegramIsHooked: webhookInfo.url?.includes(BOT_URL),
           redisIsConnected: this.redisService.isConnected(),
         };
 

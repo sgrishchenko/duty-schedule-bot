@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
-import { TelegrafContext } from 'telegraf/typings/context';
+import { Context } from 'telegraf';
 import { DialogStateContext } from '../context/DialogStateContext';
 import { DialogStateStorage } from '../storage/DialogStateStorage';
 import { Types } from '../types';
 import { Middleware } from './Middleware';
 
 @injectable()
-export class DialogStateMiddleware extends Middleware<TelegrafContext> {
+export class DialogStateMiddleware extends Middleware<Context> {
   public constructor(
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
@@ -14,7 +14,7 @@ export class DialogStateMiddleware extends Middleware<TelegrafContext> {
     super();
   }
 
-  public async handle(ctx: TelegrafContext, next: () => Promise<void>) {
+  public async handle(ctx: Context, next: () => Promise<void>) {
     const { chat } = ctx;
     if (!chat) return;
 

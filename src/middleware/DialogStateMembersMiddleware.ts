@@ -28,11 +28,19 @@ export class DialogStateMembersMiddleware extends Middleware<DialogStateContext>
       return next();
     }
 
+    if (!ctx.message) {
+      return next();
+    }
+
+    if (!('text' in ctx.message)) {
+      return next();
+    }
+
     const chatId = ctx.chat.id;
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const members = (ctx.message?.text ?? '')
+    const members = ctx.message.text
       .split('\n')
       .map((member) => member.trim())
       .filter(Boolean);

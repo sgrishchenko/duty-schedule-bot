@@ -25,11 +25,19 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
       return next();
     }
 
+    if (!ctx.message) {
+      return next();
+    }
+
+    if (!('text' in ctx.message)) {
+      return next();
+    }
+
     const chatId = ctx.chat.id;
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const [hours, minutes] = (ctx.message?.text ?? '').split(':').map(Number);
+    const [hours, minutes] = ctx.message.text.split(':').map(Number);
 
     if (!Number.isInteger(hours) || hours < 0 || hours > 23) {
       return ctx.reply('You have input hours in a wrong format. Please try again...', {

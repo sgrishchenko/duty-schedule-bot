@@ -1,7 +1,7 @@
-import { TelegrafContext } from 'telegraf/typings/context';
+import { Context } from 'telegraf';
 import { DialogState } from '../model/DialogState';
 
-export interface DialogStateContext extends TelegrafContext {
+export interface DialogStateContext extends Context {
   dialogState: DialogState | null;
-  chat: NonNullable<TelegrafContext['chat']>;
+  chat: NonNullable<Context['chat']>;
 }

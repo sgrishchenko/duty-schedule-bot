@@ -1,12 +1,12 @@
 import { injectable } from 'inversify';
-import { MiddlewareFn, MiddlewareObj } from 'telegraf/typings/composer';
-import { TelegrafContext } from 'telegraf/typings/context';
+import { Context, MiddlewareFn } from 'telegraf';
+import { MiddlewareObj } from 'telegraf/typings/middleware';
 
 @injectable()
-export abstract class Middleware<Context extends TelegrafContext> implements MiddlewareObj<Context> {
-  public abstract handle(...args: Parameters<MiddlewareFn<Context>>): ReturnType<MiddlewareFn<Context>>;
+export abstract class Middleware<C extends Context> implements MiddlewareObj<C> {
+  public abstract handle(...args: Parameters<MiddlewareFn<C>>): ReturnType<MiddlewareFn<C>>;
 
-  public middleware(): MiddlewareFn<Context> {
+  public middleware(): MiddlewareFn<C> {
     return (ctx, next) => this.handle(ctx, next);
   }
 }
