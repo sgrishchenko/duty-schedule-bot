@@ -51,7 +51,13 @@ export class DialogStateTeamSizeMiddleware extends Middleware<DialogStateContext
     const teamSize = Number(ctx.message.text);
 
     if (!Number.isInteger(teamSize)) {
-      return ctx.reply('The team size should be an integer. Please try again, or input /cancel for canceling.');
+      return ctx.reply('⚠ The team size should be an integer. Please try again, or input /cancel for canceling.', {
+        reply_to_message_id: ctx.message?.message_id,
+        reply_markup: {
+          force_reply: true,
+          selective: true,
+        },
+      });
     }
 
     const { members, interval, time } = draft;
@@ -61,11 +67,13 @@ export class DialogStateTeamSizeMiddleware extends Middleware<DialogStateContext
       await this.dialogStateStorage.set(chatId, DialogState.Members);
 
       return ctx.reply(
-        'Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n' +
+        '⚠ Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n' +
           'Input a list of your team members (each name should be on a new line):',
         {
+          reply_to_message_id: ctx.message?.message_id,
           reply_markup: {
             force_reply: true,
+            selective: true,
           },
         },
       );
@@ -89,6 +97,6 @@ export class DialogStateTeamSizeMiddleware extends Middleware<DialogStateContext
       chatId,
     });
 
-    return ctx.replyWithMarkdown(this.dutyScheduleView.render(dutySchedule));
+    return ctx.replyWithMarkdownV2(this.dutyScheduleView.render(dutySchedule));
   }
 }

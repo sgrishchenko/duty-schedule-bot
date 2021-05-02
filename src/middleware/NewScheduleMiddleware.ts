@@ -29,9 +29,11 @@ export class NewScheduleMiddleware extends Middleware<Context> {
       chatId,
     });
 
-    return ctx.reply('Input a list of your team members (each name should be on a new line):', {
+    return ctx.reply('👥 Input a list of your team members (each name should be on a new line):', {
+      reply_to_message_id: ctx.message?.message_id,
       reply_markup: {
         force_reply: true,
+        selective: true,
       },
     });
   }

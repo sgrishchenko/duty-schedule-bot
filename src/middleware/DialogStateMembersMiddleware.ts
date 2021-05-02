@@ -46,9 +46,11 @@ export class DialogStateMembersMiddleware extends Middleware<DialogStateContext>
       .filter(Boolean);
 
     if (members.length < 0) {
-      return ctx.reply('You have input an empty list of team members. Please try again...', {
+      return ctx.reply('⚠ You have input an empty list of team members. Please try again...', {
+        reply_to_message_id: ctx.message?.message_id,
         reply_markup: {
           force_reply: true,
+          selective: true,
         },
       });
     }
@@ -62,11 +64,13 @@ export class DialogStateMembersMiddleware extends Middleware<DialogStateContext>
       chatId,
     });
 
-    return ctx.reply('Input an interval for duty schedule notifications:', {
+    return ctx.reply('📅 Input an interval for duty schedule notifications:', {
+      reply_to_message_id: ctx.message?.message_id,
       reply_markup: {
         keyboard: [this.intervalView.intervalOptions],
         resize_keyboard: true,
         one_time_keyboard: true,
+        selective: true,
       },
     });
   }

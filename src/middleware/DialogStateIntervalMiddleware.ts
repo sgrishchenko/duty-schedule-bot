@@ -43,11 +43,13 @@ export class DialogStateIntervalMiddleware extends Middleware<DialogStateContext
     const interval = this.intervalView.parse(ctx.message.text);
 
     if (!interval) {
-      return ctx.reply('This interval is unsupported. Please try again...', {
+      return ctx.reply('⚠ This interval is unsupported. Please try again...', {
+        reply_to_message_id: ctx.message?.message_id,
         reply_markup: {
           keyboard: [this.intervalView.intervalOptions],
           resize_keyboard: true,
           one_time_keyboard: true,
+          selective: true,
         },
       });
     }
@@ -59,9 +61,11 @@ export class DialogStateIntervalMiddleware extends Middleware<DialogStateContext
 
     this.logger.info('Interval was set in Duty Schedule Draft.', { chatId });
 
-    return ctx.reply('Input times of day when the duty schedule notification should be sent (in 24:00 format):', {
+    return ctx.reply('⏰ Input times of day when the duty schedule notification should be sent (in 24:00 format):', {
+      reply_to_message_id: ctx.message?.message_id,
       reply_markup: {
         force_reply: true,
+        selective: true,
       },
     });
   }

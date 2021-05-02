@@ -33,6 +33,6 @@ export class CurrentScheduleMiddleware extends Middleware<Context> {
       return ctx.reply('There is no duty schedule yet. Send /newschedule to create a new duty schedule.');
     }
 
-    return ctx.replyWithMarkdown(this.dutyScheduleView.render(dutySchedule));
+    return ctx.replyWithMarkdownV2(this.dutyScheduleView.render(dutySchedule));
   }
 }

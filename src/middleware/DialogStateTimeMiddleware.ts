@@ -40,17 +40,21 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
     const [hours, minutes] = ctx.message.text.split(':').map(Number);
 
     if (!Number.isInteger(hours) || hours < 0 || hours > 23) {
-      return ctx.reply('You have input hours in a wrong format. Please try again...', {
+      return ctx.reply('⚠ You have input hours in a wrong format. Please try again...', {
+        reply_to_message_id: ctx.message?.message_id,
         reply_markup: {
           force_reply: true,
+          selective: true,
         },
       });
     }
 
     if (!Number.isInteger(minutes) || minutes < 0 || minutes > 59) {
-      return ctx.reply('You have input minutes in a wrong format. Please try again...', {
+      return ctx.reply('⚠ You have input minutes in a wrong format. Please try again...', {
+        reply_to_message_id: ctx.message?.message_id,
         reply_markup: {
           force_reply: true,
+          selective: true,
         },
       });
     }
@@ -63,13 +67,15 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
     await this.dutyScheduleDraftStorage.set(chatId, draft);
     await this.dialogStateStorage.set(chatId, DialogState.TeamSize);
 
-    this.logger.info('Time was set in Duty Schedule Draft.', {
+    this.logger.info('️Time was set in Duty Schedule Draft.', {
       chatId,
     });
 
-    return ctx.reply('How many people should be on duty at a time:', {
+    return ctx.reply('️🔢 How many people should be on duty at a time:', {
+      reply_to_message_id: ctx.message?.message_id,
       reply_markup: {
         force_reply: true,
+        selective: true,
       },
     });
   }
