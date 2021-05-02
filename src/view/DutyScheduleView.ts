@@ -20,10 +20,10 @@ export class DutyScheduleView {
     const timeView = `${time.hours}:${String(time.minutes).padStart(2, '0')}`;
 
     return `
-\u{1F465} *Current list of members*:
+👥 *Current list of members*:
 ${this.renderMembers(schedule)}
 
-\u23F0 *You will be notified*:
+⏰ *You will be notified*:
 ${internalView} at ${timeView}
     `;
   }
@@ -35,7 +35,7 @@ ${internalView} at ${timeView}
     return members
       .map((member) => {
         const isDuty = team.includes(member);
-        return `    ${isDuty ? '\u{23F3}' : '\u{1F4A4}'} ${member}`;
+        return `    ${isDuty ? '⏳' : '💤'} ${member}`;
       })
       .join('\n');
   }
