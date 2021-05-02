@@ -1,18 +1,17 @@
-import { inject, injectable } from "inversify";
-import { Logger } from "winston";
-import { DutySchedule } from "../model/DutySchedule";
-import { DutyScheduleStorage } from "../storage/DutyScheduleStorage";
-import { Types } from "../types";
-import { NotificationView } from "../view/NotificationView";
-import { Scheduler } from "./Scheduler";
-import { SchedulerFactory } from "./SchedulerFactory";
-import { TeamService } from "./TeamService";
+import { inject, injectable } from 'inversify';
+import { Logger } from 'winston';
+import { DutySchedule } from '../model/DutySchedule';
+import { DutyScheduleStorage } from '../storage/DutyScheduleStorage';
+import { Types } from '../types';
+import { NotificationView } from '../view/NotificationView';
+import { Scheduler } from './Scheduler';
+import { SchedulerFactory } from './SchedulerFactory';
+import { TeamService } from './TeamService';
 
 @injectable()
 export class SchedulerService {
   private schedulers: Partial<Record<number, Scheduler>> = {};
-  private sendMessage: (chatId: number, text: string) => Promise<void> = () =>
-    Promise.resolve();
+  private sendMessage: (chatId: number, text: string) => Promise<void> = () => Promise.resolve();
 
   public constructor(
     @inject(Types.Logger)
@@ -24,10 +23,10 @@ export class SchedulerService {
     @inject(Types.TeamService)
     private teamService: TeamService,
     @inject(Types.NotificationView)
-    private notificationView: NotificationView
+    private notificationView: NotificationView,
   ) {}
 
-  public async init(sendMessage: SchedulerService["sendMessage"]) {
+  public async init(sendMessage: SchedulerService['sendMessage']) {
     this.schedulers = {};
     this.sendMessage = sendMessage;
 
@@ -53,19 +52,13 @@ export class SchedulerService {
           return this.dutyScheduleStorage.set(chatId, currentSchedule);
         })
         .then(() => {
-          return this.logger.info(
-            "Duty Schedule was updated, notification was sent.",
-            { chatId }
-          );
+          return this.logger.info('Duty Schedule was updated, notification was sent.', { chatId });
         });
     };
 
-    this.schedulers[chatId] = this.schedulerFactory(
-      dutySchedule,
-      handleCallback
-    );
+    this.schedulers[chatId] = this.schedulerFactory(dutySchedule, handleCallback);
 
-    this.logger.info("Scheduler was created.", { chatId });
+    this.logger.info('Scheduler was created.', { chatId });
   }
 
   public destroyScheduler(chatId: number) {
@@ -76,7 +69,7 @@ export class SchedulerService {
       delete this.schedulers[chatId];
     }
 
-    this.logger.info("Scheduler was destroyed.", { chatId });
+    this.logger.info('Scheduler was destroyed.', { chatId });
   }
 
   public updateScheduler(chatId: number, dutySchedule: DutySchedule) {

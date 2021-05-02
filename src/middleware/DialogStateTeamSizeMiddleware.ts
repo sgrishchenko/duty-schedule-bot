@@ -1,20 +1,18 @@
-import { inject, injectable } from "inversify";
-import { Logger } from "winston";
-import { DialogStateContext } from "../context/DialogStateContext";
-import { DialogState } from "../model/DialogState";
-import { DutySchedule } from "../model/DutySchedule";
-import { SchedulerService } from "../service/SchedulerService";
-import { DialogStateStorage } from "../storage/DialogStateStorage";
-import { DutyScheduleDraftStorage } from "../storage/DutyScheduleDraftStorage";
-import { DutyScheduleStorage } from "../storage/DutyScheduleStorage";
-import { Types } from "../types";
-import { DutyScheduleView } from "../view/DutyScheduleView";
-import { Middleware } from "./Middleware";
+import { inject, injectable } from 'inversify';
+import { Logger } from 'winston';
+import { DialogStateContext } from '../context/DialogStateContext';
+import { DialogState } from '../model/DialogState';
+import { DutySchedule } from '../model/DutySchedule';
+import { SchedulerService } from '../service/SchedulerService';
+import { DialogStateStorage } from '../storage/DialogStateStorage';
+import { DutyScheduleDraftStorage } from '../storage/DutyScheduleDraftStorage';
+import { DutyScheduleStorage } from '../storage/DutyScheduleStorage';
+import { Types } from '../types';
+import { DutyScheduleView } from '../view/DutyScheduleView';
+import { Middleware } from './Middleware';
 
 @injectable()
-export class DialogStateTeamSizeMiddleware extends Middleware<
-  DialogStateContext
-> {
+export class DialogStateTeamSizeMiddleware extends Middleware<DialogStateContext> {
   public constructor(
     @inject(Types.Logger)
     private logger: Logger,
@@ -28,7 +26,7 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
     @inject(Types.SchedulerService)
     private schedulerService: SchedulerService,
     @inject(Types.DutyScheduleView)
-    private dutyScheduleView: DutyScheduleView
+    private dutyScheduleView: DutyScheduleView,
   ) {
     super();
   }
@@ -42,12 +40,10 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const teamSize = Number(ctx.message?.text ?? "");
+    const teamSize = Number(ctx.message?.text ?? '');
 
     if (!Number.isInteger(teamSize)) {
-      return ctx.reply(
-        "The team size should be an integer. Please try again, or input /cancel for canceling."
-      );
+      return ctx.reply('The team size should be an integer. Please try again, or input /cancel for canceling.');
     }
 
     const { members, interval, time } = draft;
@@ -57,13 +53,13 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
       await this.dialogStateStorage.set(chatId, DialogState.Members);
 
       return ctx.reply(
-        "Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n" +
-          "Input a list of your team members (each name should be on a new line):",
+        'Something went wrong, when you tried to describe a new duty schedule. Try starting over.\n' +
+          'Input a list of your team members (each name should be on a new line):',
         {
           reply_markup: {
             force_reply: true,
           },
-        }
+        },
       );
     }
 
@@ -81,7 +77,7 @@ export class DialogStateTeamSizeMiddleware extends Middleware<
     await this.dutyScheduleStorage.set(chatId, dutySchedule);
     this.schedulerService.updateScheduler(chatId, dutySchedule);
 
-    this.logger.info("Duty Schedule was created.", {
+    this.logger.info('Duty Schedule was created.', {
       chatId,
     });
 

@@ -1,17 +1,15 @@
-import { inject, injectable } from "inversify";
-import { Logger } from "winston";
-import { DialogStateContext } from "../context/DialogStateContext";
-import { DialogState } from "../model/DialogState";
-import { DialogStateStorage } from "../storage/DialogStateStorage";
-import { DutyScheduleDraftStorage } from "../storage/DutyScheduleDraftStorage";
-import { Types } from "../types";
-import { IntervalView } from "../view/IntervalView";
-import { Middleware } from "./Middleware";
+import { inject, injectable } from 'inversify';
+import { Logger } from 'winston';
+import { DialogStateContext } from '../context/DialogStateContext';
+import { DialogState } from '../model/DialogState';
+import { DialogStateStorage } from '../storage/DialogStateStorage';
+import { DutyScheduleDraftStorage } from '../storage/DutyScheduleDraftStorage';
+import { Types } from '../types';
+import { IntervalView } from '../view/IntervalView';
+import { Middleware } from './Middleware';
 
 @injectable()
-export class DialogStateMembersMiddleware extends Middleware<
-  DialogStateContext
-> {
+export class DialogStateMembersMiddleware extends Middleware<DialogStateContext> {
   public constructor(
     @inject(Types.Logger)
     private logger: Logger,
@@ -20,7 +18,7 @@ export class DialogStateMembersMiddleware extends Middleware<
     @inject(Types.DutyScheduleDraftStorage)
     private dutyScheduleDraftStorage: DutyScheduleDraftStorage,
     @inject(Types.IntervalView)
-    private intervalView: IntervalView
+    private intervalView: IntervalView,
   ) {
     super();
   }
@@ -34,20 +32,17 @@ export class DialogStateMembersMiddleware extends Middleware<
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const members = (ctx.message?.text ?? "")
-      .split("\n")
+    const members = (ctx.message?.text ?? '')
+      .split('\n')
       .map((member) => member.trim())
       .filter(Boolean);
 
     if (members.length < 0) {
-      return ctx.reply(
-        "You have input an empty list of team members. Please try again...",
-        {
-          reply_markup: {
-            force_reply: true,
-          },
-        }
-      );
+      return ctx.reply('You have input an empty list of team members. Please try again...', {
+        reply_markup: {
+          force_reply: true,
+        },
+      });
     }
 
     draft.members = members;
@@ -55,11 +50,11 @@ export class DialogStateMembersMiddleware extends Middleware<
     await this.dutyScheduleDraftStorage.set(chatId, draft);
     await this.dialogStateStorage.set(chatId, DialogState.Interval);
 
-    this.logger.info("List of Members was set in Duty Schedule Draft.", {
+    this.logger.info('List of Members was set in Duty Schedule Draft.', {
       chatId,
     });
 
-    return ctx.reply("Input an interval for duty schedule notifications:", {
+    return ctx.reply('Input an interval for duty schedule notifications:', {
       reply_markup: {
         keyboard: [this.intervalView.intervalOptions],
         resize_keyboard: true,

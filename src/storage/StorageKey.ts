@@ -1,5 +1,5 @@
 export enum StorageKey {
-  DutyScheduleDrafts = "DutyScheduleDrafts",
-  DutySchedules = "DutySchedules",
-  DialogState = "DialogState",
+  DutyScheduleDrafts = 'DutyScheduleDrafts',
+  DutySchedules = 'DutySchedules',
+  DialogState = 'DialogState',
 }

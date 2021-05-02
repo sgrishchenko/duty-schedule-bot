@@ -1,15 +1,15 @@
-import { inject, injectable } from "inversify";
-import { DutyScheduleDraft } from "../model/DutySchedule";
-import { RedisService } from "../service/RedisService";
-import { Types } from "../types";
-import { Storage } from "./Storage";
-import { StorageKey } from "./StorageKey";
+import { inject, injectable } from 'inversify';
+import { DutyScheduleDraft } from '../model/DutySchedule';
+import { RedisService } from '../service/RedisService';
+import { Types } from '../types';
+import { Storage } from './Storage';
+import { StorageKey } from './StorageKey';
 
 @injectable()
 export class DutyScheduleDraftStorage extends Storage<DutyScheduleDraft> {
   public constructor(
     @inject(Types.RedisService)
-    redisService: RedisService
+    redisService: RedisService,
   ) {
     super(redisService, StorageKey.DutyScheduleDrafts);
   }

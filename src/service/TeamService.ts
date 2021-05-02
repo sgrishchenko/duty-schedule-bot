@@ -1,5 +1,5 @@
-import { injectable } from "inversify";
-import { DutySchedule } from "../model/DutySchedule";
+import { injectable } from 'inversify';
+import { DutySchedule } from '../model/DutySchedule';
 
 @injectable()
 export class TeamService {

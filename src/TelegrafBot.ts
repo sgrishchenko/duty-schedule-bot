@@ -1,26 +1,26 @@
-import { createServer, RequestListener } from "http";
-import { inject, injectable } from "inversify";
-import Telegraf from "telegraf";
-import { Logger } from "winston";
-import { DialogStateContext } from "./context/DialogStateContext";
-import { CurrentScheduleMiddleware } from "./middleware/CurrentScheduleMiddleware";
-import { DeleteScheduleMiddleware } from "./middleware/DeleteScheduleMiddleware";
-import { DialogStateIntervalMiddleware } from "./middleware/DialogStateIntervalMiddleware";
-import { DialogStateMembersMiddleware } from "./middleware/DialogStateMembersMiddleware";
-import { DialogStateMiddleware } from "./middleware/DialogStateMiddleware";
-import { DialogStateTeamSizeMiddleware } from "./middleware/DialogStateTeamSizeMiddleware";
-import { DialogStateTimeMiddleware } from "./middleware/DialogStateTimeMiddleware";
-import { HelpMiddleware } from "./middleware/HelpMiddleware";
-import { NewScheduleMiddleware } from "./middleware/NewScheduleMiddleware";
-import { RedisService } from "./service/RedisService";
-import { SchedulerService } from "./service/SchedulerService";
-import { Types } from "./types";
+import { createServer, RequestListener } from 'http';
+import { inject, injectable } from 'inversify';
+import Telegraf from 'telegraf';
+import { Logger } from 'winston';
+import { DialogStateContext } from './context/DialogStateContext';
+import { CurrentScheduleMiddleware } from './middleware/CurrentScheduleMiddleware';
+import { DeleteScheduleMiddleware } from './middleware/DeleteScheduleMiddleware';
+import { DialogStateIntervalMiddleware } from './middleware/DialogStateIntervalMiddleware';
+import { DialogStateMembersMiddleware } from './middleware/DialogStateMembersMiddleware';
+import { DialogStateMiddleware } from './middleware/DialogStateMiddleware';
+import { DialogStateTeamSizeMiddleware } from './middleware/DialogStateTeamSizeMiddleware';
+import { DialogStateTimeMiddleware } from './middleware/DialogStateTimeMiddleware';
+import { HelpMiddleware } from './middleware/HelpMiddleware';
+import { NewScheduleMiddleware } from './middleware/NewScheduleMiddleware';
+import { RedisService } from './service/RedisService';
+import { SchedulerService } from './service/SchedulerService';
+import { Types } from './types';
 
-const NODE_ENV = process.env.NODE_ENV ?? "development";
+const NODE_ENV = process.env.NODE_ENV ?? 'development';
 const PORT = Number(process.env.PORT) ?? 3000;
 
-const BOT_URL = process.env.BOT_URL ?? "";
-const BOT_TOKEN = process.env.BOT_TOKEN ?? "";
+const BOT_URL = process.env.BOT_URL ?? '';
+const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 
 @injectable()
 export class TelegrafBot {
@@ -54,28 +54,28 @@ export class TelegrafBot {
     @inject(Types.RedisService)
     private redisService: RedisService,
     @inject(Types.SchedulerService)
-    private schedulerService: SchedulerService
+    private schedulerService: SchedulerService,
   ) {
     this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN, {
-      username: "DutyScheduleBot",
+      username: 'DutyScheduleBot',
     });
 
     this.bot.start(helpMiddleware);
     this.bot.help(helpMiddleware);
 
-    this.bot.command("newschedule", newScheduleMiddleware);
+    this.bot.command('newschedule', newScheduleMiddleware);
 
-    this.bot.command("currentschedule", currentScheduleMiddleware);
+    this.bot.command('currentschedule', currentScheduleMiddleware);
 
-    this.bot.command("deleteschedule", deleteScheduleMiddleware);
+    this.bot.command('deleteschedule', deleteScheduleMiddleware);
 
     this.bot.on(
-      "message",
+      'message',
       dialogStateMiddleware,
       dialogStateMembersMiddleware,
       dialogStateIntervalMiddleware,
       dialogStateTimeMiddleware,
-      dialogStateTeamSizeMiddleware
+      dialogStateTeamSizeMiddleware,
     );
 
     this.bot.catch((error: unknown) => {
@@ -83,20 +83,20 @@ export class TelegrafBot {
     });
 
     this.init().then(() => {
-      this.logger.info("Duty Schedule Bot is started!");
+      this.logger.info('Duty Schedule Bot is started!');
     });
   }
 
   private async init() {
-    if (NODE_ENV === "production") {
-      this.logger.info("Running the bot in webhook mode...");
+    if (NODE_ENV === 'production') {
+      this.logger.info('Running the bot in webhook mode...');
 
       await this.bot.telegram.setWebhook(`${BOT_URL}/bot${BOT_TOKEN}`);
 
       const server = createServer(this.requestListener);
       await new Promise((resolve) => server.listen(PORT, resolve));
     } else {
-      this.logger.info("Running the bot in long-polling mode...");
+      this.logger.info('Running the bot in long-polling mode...');
 
       await this.bot.launch();
     }
@@ -105,7 +105,7 @@ export class TelegrafBot {
   }
 
   private requestListener: RequestListener = (request, response) => {
-    if (request.url === "/") {
+    if (request.url === '/') {
       this.bot.telegram.getWebhookInfo().then((webhookInfo) => {
         const result = {
           telegramIsHooked: webhookInfo.url.includes(BOT_URL),
@@ -113,7 +113,7 @@ export class TelegrafBot {
         };
 
         response.statusCode = 200;
-        response.setHeader("Content-Type", "application/json");
+        response.setHeader('Content-Type', 'application/json');
         response.end(JSON.stringify(result, null, 2));
       });
     } else {
@@ -123,7 +123,7 @@ export class TelegrafBot {
 
   private sendMessage = async (chatId: number, text: string) => {
     await this.bot.telegram.sendMessage(chatId, text, {
-      parse_mode: "MarkdownV2",
+      parse_mode: 'MarkdownV2',
     });
   };
 }

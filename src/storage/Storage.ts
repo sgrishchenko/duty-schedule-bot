@@ -1,13 +1,10 @@
-import { injectable, unmanaged } from "inversify";
-import { RedisService } from "../service/RedisService";
-import { StorageKey } from "./StorageKey";
+import { injectable, unmanaged } from 'inversify';
+import { RedisService } from '../service/RedisService';
+import { StorageKey } from './StorageKey';
 
 @injectable()
 export abstract class Storage<Type> {
-  protected constructor(
-    @unmanaged() private redisService: RedisService,
-    @unmanaged() private storageKey: StorageKey
-  ) {}
+  protected constructor(@unmanaged() private redisService: RedisService, @unmanaged() private storageKey: StorageKey) {}
 
   public async get(chatId: number): Promise<Type | null> {
     const reply = await this.redisService.get(this.storageKey, String(chatId));
@@ -21,16 +18,12 @@ export abstract class Storage<Type> {
     return Object.fromEntries(
       Object.entries(reply ?? {}).map(([key, value]) => {
         return [key, JSON.parse(value)];
-      })
+      }),
     );
   }
 
   public async set(chatId: number, entity: Type): Promise<void> {
-    await this.redisService.set(
-      this.storageKey,
-      String(chatId),
-      JSON.stringify(entity)
-    );
+    await this.redisService.set(this.storageKey, String(chatId), JSON.stringify(entity));
   }
 
   public async delete(chatId: number): Promise<void> {

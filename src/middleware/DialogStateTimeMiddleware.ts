@@ -1,11 +1,11 @@
-import { inject, injectable } from "inversify";
-import { Logger } from "winston";
-import { DialogStateContext } from "../context/DialogStateContext";
-import { DialogState } from "../model/DialogState";
-import { DialogStateStorage } from "../storage/DialogStateStorage";
-import { DutyScheduleDraftStorage } from "../storage/DutyScheduleDraftStorage";
-import { Types } from "../types";
-import { Middleware } from "./Middleware";
+import { inject, injectable } from 'inversify';
+import { Logger } from 'winston';
+import { DialogStateContext } from '../context/DialogStateContext';
+import { DialogState } from '../model/DialogState';
+import { DialogStateStorage } from '../storage/DialogStateStorage';
+import { DutyScheduleDraftStorage } from '../storage/DutyScheduleDraftStorage';
+import { Types } from '../types';
+import { Middleware } from './Middleware';
 
 @injectable()
 export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
@@ -15,7 +15,7 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
     @inject(Types.DialogStateStorage)
     private dialogStateStorage: DialogStateStorage,
     @inject(Types.DutyScheduleDraftStorage)
-    private dutyScheduleDraftStorage: DutyScheduleDraftStorage
+    private dutyScheduleDraftStorage: DutyScheduleDraftStorage,
   ) {
     super();
   }
@@ -29,28 +29,22 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
 
     const draft = await this.dutyScheduleDraftStorage.get(chatId);
 
-    const [hours, minutes] = (ctx.message?.text ?? "").split(":").map(Number);
+    const [hours, minutes] = (ctx.message?.text ?? '').split(':').map(Number);
 
     if (!Number.isInteger(hours) || hours < 0 || hours > 23) {
-      return ctx.reply(
-        "You have input hours in a wrong format. Please try again...",
-        {
-          reply_markup: {
-            force_reply: true,
-          },
-        }
-      );
+      return ctx.reply('You have input hours in a wrong format. Please try again...', {
+        reply_markup: {
+          force_reply: true,
+        },
+      });
     }
 
     if (!Number.isInteger(minutes) || minutes < 0 || minutes > 59) {
-      return ctx.reply(
-        "You have input minutes in a wrong format. Please try again...",
-        {
-          reply_markup: {
-            force_reply: true,
-          },
-        }
-      );
+      return ctx.reply('You have input minutes in a wrong format. Please try again...', {
+        reply_markup: {
+          force_reply: true,
+        },
+      });
     }
 
     draft.time = {
@@ -61,11 +55,11 @@ export class DialogStateTimeMiddleware extends Middleware<DialogStateContext> {
     await this.dutyScheduleDraftStorage.set(chatId, draft);
     await this.dialogStateStorage.set(chatId, DialogState.TeamSize);
 
-    this.logger.info("Time was set in Duty Schedule Draft.", {
+    this.logger.info('Time was set in Duty Schedule Draft.', {
       chatId,
     });
 
-    return ctx.reply("How many people should be on duty at a time:", {
+    return ctx.reply('How many people should be on duty at a time:', {
       reply_markup: {
         force_reply: true,
       },
