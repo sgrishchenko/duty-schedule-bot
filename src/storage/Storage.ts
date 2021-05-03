@@ -4,7 +4,12 @@ import { StorageKey } from './StorageKey';
 
 @injectable()
 export abstract class Storage<Type> {
-  protected constructor(@unmanaged() private redisService: RedisService, @unmanaged() private storageKey: StorageKey) {}
+  protected constructor(
+    @unmanaged()
+    private redisService: RedisService,
+    @unmanaged()
+    private storageKey: StorageKey,
+  ) {}
 
   public async get(chatId: number): Promise<Type | null> {
     const reply = await this.redisService.get(this.storageKey, String(chatId));

@@ -1,7 +1,8 @@
-import { createServer, RequestListener } from 'http';
+import { createServer, RequestListener, Server } from 'http';
 import { inject, injectable } from 'inversify';
 import { Telegraf } from 'telegraf';
 import { Logger } from 'winston';
+import { promisify } from 'util';
 import { DialogStateContext } from './context/DialogStateContext';
 import { CurrentScheduleMiddleware } from './middleware/CurrentScheduleMiddleware';
 import { DeleteScheduleMiddleware } from './middleware/DeleteScheduleMiddleware';
@@ -17,14 +18,17 @@ import { SchedulerService } from './service/SchedulerService';
 import { Types } from './types';
 
 const NODE_ENV = process.env.NODE_ENV ?? 'development';
-const PORT = Number(process.env.PORT) ?? 3000;
+const PORT = Number(process.env.PORT ?? 3000);
 
 const BOT_URL = process.env.BOT_URL ?? '';
 const BOT_TOKEN = process.env.BOT_TOKEN ?? '';
 
+const API_URL = process.env.API_URL;
+
 @injectable()
 export class TelegrafBot {
-  private bot: Telegraf<DialogStateContext>;
+  private readonly server: Server;
+  private readonly bot: Telegraf<DialogStateContext>;
 
   public constructor(
     @inject(Types.Logger)
@@ -56,7 +60,11 @@ export class TelegrafBot {
     @inject(Types.SchedulerService)
     private schedulerService: SchedulerService,
   ) {
-    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN);
+    this.bot = new Telegraf<DialogStateContext>(BOT_TOKEN, {
+      telegram: {
+        apiRoot: API_URL,
+      },
+    });
 
     this.bot.start(helpMiddleware);
     this.bot.help(helpMiddleware);
@@ -80,19 +88,16 @@ export class TelegrafBot {
       this.logger.error(error);
     });
 
-    this.init().then(() => {
-      this.logger.info('Duty Schedule Bot is started!');
-    });
+    this.server = createServer(this.requestListener);
   }
 
-  private async init() {
-    if (NODE_ENV === 'production') {
+  public async init() {
+    if (NODE_ENV === 'production' || NODE_ENV === 'test') {
       this.logger.info('Running the bot in webhook mode...');
 
       await this.bot.telegram.setWebhook(`${BOT_URL}/bot${BOT_TOKEN}`);
 
-      const server = createServer(this.requestListener);
-      await new Promise<void>((resolve) => server.listen(PORT, resolve));
+      await promisify<number, undefined>(this.server.listen).call(this.server, PORT, undefined);
     } else {
       this.logger.info('Running the bot in long-polling mode...');
 
@@ -124,4 +129,10 @@ export class TelegrafBot {
       parse_mode: 'MarkdownV2',
     });
   };
+
+  public async stop() {
+    await this.schedulerService.stop();
+    await this.redisService.quit();
+    await promisify(this.server.close).call(this.server);
+  }
 }

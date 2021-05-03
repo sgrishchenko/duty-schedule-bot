@@ -13,9 +13,13 @@ export class RedisService {
   public getAll: (key: string) => Promise<Record<string, string> | null>;
   public set: (key: string, field: string, value: string) => Promise<number>;
   public delete: (key: string, field: string) => Promise<number>;
+  public quit: () => void = () => undefined;
   public isConnected: () => boolean;
 
-  public constructor(@inject(Types.Logger) logger: Logger) {
+  public constructor(
+    @inject(Types.Logger)
+    private logger: Logger,
+  ) {
     const client = redis
       .createClient({
         url: REDIS_URL,
@@ -30,6 +34,7 @@ export class RedisService {
     this.getAll = promisify(client.hgetall).bind(client);
     this.set = promisify<string, string, string, number>(client.hset).bind(client);
     this.delete = promisify(client.hdel).bind(client);
+    this.quit = promisify(client.quit).bind(client);
 
     this.isConnected = () => client.connected;
   }

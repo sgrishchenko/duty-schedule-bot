@@ -76,4 +76,10 @@ export class SchedulerService {
     this.destroyScheduler(chatId);
     this.createScheduler(chatId, dutySchedule);
   }
+
+  public async stop() {
+    for (const chatId of Object.keys(this.schedulers)) {
+      this.destroyScheduler(Number(chatId));
+    }
+  }
 }
