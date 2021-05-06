@@ -13,7 +13,7 @@ export class RedisService {
   public getAll: (key: string) => Promise<Record<string, string> | null>;
   public set: (key: string, field: string, value: string) => Promise<number>;
   public delete: (key: string, field: string) => Promise<number>;
-  public quit: () => void = () => undefined;
+  public quit: () => void;
   public isConnected: () => boolean;
 
   public constructor(

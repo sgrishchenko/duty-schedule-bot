@@ -1,8 +1,8 @@
 import { createServer, RequestListener, Server } from 'http';
 import { inject, injectable } from 'inversify';
 import { Telegraf } from 'telegraf';
-import { Logger } from 'winston';
 import { promisify } from 'util';
+import { Logger } from 'winston';
 import { DialogStateContext } from './context/DialogStateContext';
 import { CurrentScheduleMiddleware } from './middleware/CurrentScheduleMiddleware';
 import { DeleteScheduleMiddleware } from './middleware/DeleteScheduleMiddleware';
